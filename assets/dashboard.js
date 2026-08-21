@@ -12,6 +12,8 @@ const GOOD = {
   ordersPerDay: 20,
   cancellationPct: 3,
   kptP80Minutes: 10,
+  rating: 4.5,
+  ratingMin: 4.0,
 };
 
 const ALERT_SEVERITY = {
@@ -84,7 +86,24 @@ function metricChipClass(value, kind) {
   if (kind === 'minRevPerDay') return value >= GOOD.revPerDay ? 'good' : 'na';
   if (kind === 'minOrdersPerDay') return value >= GOOD.ordersPerDay ? 'good' : 'na';
   if (kind === 'maxKpt') return value <= GOOD.kptP80Minutes ? 'good' : value <= 15 ? 'warn' : 'crit';
+  if (kind === 'rating') return value >= GOOD.rating ? 'good' : value >= GOOD.ratingMin ? 'warn' : 'crit';
   return 'na';
+}
+
+function pendingChip() {
+  const span = document.createElement('span');
+  span.className = 'metric-chip na';
+  span.textContent = 'Not yet rated';
+  return span;
+}
+
+function ratingChipCell(cell, ratingEntry) {
+  if (!ratingEntry || ratingEntry.rating === null || ratingEntry.rating === undefined) {
+    cell.appendChild(pendingChip());
+    return;
+  }
+  const countLabel = ratingEntry.count === null || ratingEntry.count === undefined ? '' : ` (${ratingEntry.count})`;
+  cell.appendChild(scaledChip(`${ratingEntry.rating.toFixed(1)}★${countLabel}`, ratingEntry.rating, 'rating'));
 }
 
 function scaledChip(displayText, rawValue, kind) {
@@ -144,6 +163,9 @@ function renderSparkline(container, values) {
 function renderHeader(dashboard) {
   document.getElementById('generated-at').textContent =
     `Data as of ${dashboard.generated_at_ist} · trailing ${dashboard.window_days}-day window`;
+  const ratingsAsOf = dashboard.stores.length ? dashboard.stores[0].ratings.as_of : null;
+  document.getElementById('ratings-as-of').textContent =
+    ratingsAsOf ? `Storefront ratings are a one-time snapshot as of ${fmtDateLabel(ratingsAsOf)}, not live.` : '';
 }
 
 // ---------- store picker ----------
@@ -552,14 +574,19 @@ function renderSortableTable(tableId, columns, rows, sortState) {
 
 function sumDailyInRange(daily, start, end) {
   let revenue = 0, orders = 0, days = 0;
+  let swiggyRevenue = 0, zomatoRevenue = 0, swiggyOrders = 0, zomatoOrders = 0;
   for (const d of daily) {
     if (d.date >= start && d.date <= end) {
       revenue += d.total;
       orders += d.online_orders;
+      swiggyRevenue += d.online.swiggy;
+      zomatoRevenue += d.online.zomato;
+      swiggyOrders += d.orders_by_channel.swiggy;
+      zomatoOrders += d.orders_by_channel.zomato;
       days++;
     }
   }
-  return { revenue, orders, days };
+  return { revenue, orders, swiggyRevenue, zomatoRevenue, swiggyOrders, zomatoOrders, days };
 }
 
 function fmtThousands(n) {
@@ -568,15 +595,29 @@ function fmtThousands(n) {
 
 function buildDetailRow(s, range) {
   const sums = sumDailyInRange(s.revenue.daily, range.start, range.end);
+  const perDay = (total) => (sums.days > 0 ? total / sums.days : null);
   return {
     city: s.city,
     store: s.display_name,
     launchDate: s.launch_date,
     daysSinceLaunch: s.days_since_launch,
-    revPerDay: sums.days > 0 ? sums.revenue / sums.days : null,
-    opd: sums.days > 0 ? sums.orders / sums.days : null,
-    lifetimeRevenue: s.revenue.lifetime.total,
+    revPerDay: perDay(sums.revenue),
+    opd: perDay(sums.orders),
+    swiggyOpd: perDay(sums.swiggyOrders),
+    zomatoOpd: perDay(sums.zomatoOrders),
+    swiggyRevPerDay: perDay(sums.swiggyRevenue),
+    zomatoRevPerDay: perDay(sums.zomatoRevenue),
   };
+}
+
+function opdCell(cell, value) {
+  if (value === null) { cell.textContent = '—'; return; }
+  cell.appendChild(scaledChip(value.toFixed(1), value, 'minOrdersPerDay'));
+}
+
+function revPerDayCell(cell, value) {
+  if (value === null) { cell.textContent = '—'; return; }
+  cell.appendChild(scaledChip(fmtThousands(value), value, 'minRevPerDay'));
 }
 
 const DETAIL_COLUMNS = [
@@ -584,21 +625,12 @@ const DETAIL_COLUMNS = [
   { label: 'Store', value: r => r.store, display: r => r.store, storeCell: true },
   { label: 'Live Since', value: r => r.launchDate, display: r => fmtDateLabel(r.launchDate) },
   { label: 'Days Live', value: r => r.daysSinceLaunch, numeric: true, display: r => String(r.daysSinceLaunch) },
-  {
-    label: 'OPD', value: r => r.opd, numeric: true,
-    render: (cell, r) => {
-      if (r.opd === null) { cell.textContent = '—'; return; }
-      cell.appendChild(scaledChip(r.opd.toFixed(1), r.opd, 'minOrdersPerDay'));
-    },
-  },
-  {
-    label: 'Rev/day (k)', value: r => r.revPerDay, numeric: true,
-    render: (cell, r) => {
-      if (r.revPerDay === null) { cell.textContent = '—'; return; }
-      cell.appendChild(scaledChip(fmtThousands(r.revPerDay), r.revPerDay, 'minRevPerDay'));
-    },
-  },
-  { label: 'Lifetime Revenue', value: r => r.lifetimeRevenue, numeric: true, display: r => fmtMoneyCompact(r.lifetimeRevenue) },
+  { label: 'OPD', value: r => r.opd, numeric: true, render: (cell, r) => opdCell(cell, r.opd) },
+  { label: 'Rev/day (k)', value: r => r.revPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revPerDay) },
+  { label: 'S-OPD', value: r => r.swiggyOpd, numeric: true, render: (cell, r) => opdCell(cell, r.swiggyOpd) },
+  { label: 'Z-OPD', value: r => r.zomatoOpd, numeric: true, render: (cell, r) => opdCell(cell, r.zomatoOpd) },
+  { label: 'S-Rev/day (k)', value: r => r.swiggyRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.swiggyRevPerDay) },
+  { label: 'Z-Rev/day (k)', value: r => r.zomatoRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.zomatoRevPerDay) },
 ];
 
 const detailSortState = { col: 3, dir: 1 };
@@ -627,12 +659,21 @@ function opsComputedInRange(opsComputedDaily, start, end) {
 
 function buildHealthRow(s, range) {
   const computed = opsComputedInRange(s.ops_computed.daily, range.start, range.end);
-  return { city: s.city, store: s.display_name, cancellationPct: computed.cancellationPct, kptP80Minutes: computed.kptP80Minutes };
+  return {
+    city: s.city,
+    store: s.display_name,
+    launchDate: s.launch_date,
+    cancellationPct: computed.cancellationPct,
+    kptP80Minutes: computed.kptP80Minutes,
+    swiggyRating: s.ratings.swiggy,
+    zomatoRating: s.ratings.zomato,
+  };
 }
 
 const HEALTH_COLUMNS = [
   { label: 'City', value: r => r.city, display: r => r.city },
   { label: 'Store', value: r => r.store, display: r => r.store, storeCell: true },
+  { label: 'Live Since', value: r => r.launchDate, display: r => fmtDateLabel(r.launchDate) },
   {
     label: 'Cancellation %', value: r => r.cancellationPct, numeric: true,
     render: (cell, r) => cell.appendChild(metricChip(r.cancellationPct !== null ? r.cancellationPct.toFixed(1) : null, 'maxCancel', r.cancellationPct !== null ? '%' : '')),
@@ -640,6 +681,14 @@ const HEALTH_COLUMNS = [
   {
     label: 'KPT P80 (min)', value: r => r.kptP80Minutes, numeric: true,
     render: (cell, r) => cell.appendChild(metricChip(r.kptP80Minutes !== null ? r.kptP80Minutes.toFixed(1) : null, 'maxKpt')),
+  },
+  {
+    label: 'Swiggy Storefront', value: r => r.swiggyRating.rating, numeric: true,
+    render: (cell, r) => ratingChipCell(cell, r.swiggyRating),
+  },
+  {
+    label: 'Zomato Storefront', value: r => r.zomatoRating.rating, numeric: true,
+    render: (cell, r) => ratingChipCell(cell, r.zomatoRating),
   },
 ];
 

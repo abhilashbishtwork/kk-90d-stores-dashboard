@@ -9,10 +9,15 @@ up across all of a store's aliases, not just its current canonical name.
 from datetime import timedelta
 
 from build.cities import city_for, display_name_for
+from build.ratings_snapshot import ratings_for, SNAPSHOT_DATE as RATINGS_SNAPSHOT_DATE
 
 
 def _empty_channel_totals():
     return {"swiggy": 0.0, "zomato": 0.0, "ownly": 0.0}
+
+
+def _empty_channel_order_counts():
+    return {"swiggy": 0, "zomato": 0, "ownly": 0}
 
 
 def _empty_window():
@@ -39,9 +44,14 @@ def build_dashboard_payload(roster, revenue_rows, ops_rows, today_ist):
         if canonical is None:
             continue
         key = (canonical, r["order_date"])
-        entry = by_store_date.setdefault(key, {"online": _empty_channel_totals(), "online_orders": 0})
+        entry = by_store_date.setdefault(key, {
+            "online": _empty_channel_totals(),
+            "online_orders": 0,
+            "orders_by_channel": _empty_channel_order_counts(),
+        })
         entry["online"][r["channel"]] = entry["online"].get(r["channel"], 0.0) + float(r["revenue"])
         entry["online_orders"] += int(r["order_count"])
+        entry["orders_by_channel"][r["channel"]] = entry["orders_by_channel"].get(r["channel"], 0) + int(r["order_count"])
 
     by_store_ops = {}
     for r in ops_rows:
@@ -75,17 +85,20 @@ def build_dashboard_payload(roster, revenue_rows, ops_rows, today_ist):
                 "online": entry["online"],
                 "total": sum(entry["online"].values()),
                 "online_orders": entry["online_orders"],
+                "orders_by_channel": entry["orders_by_channel"],
             })
 
         launch_date = store["launch_date"]
         days_since_launch = (today_ist - _parse_date(launch_date)).days
+        display_name = display_name_for(store_name)
 
         stores_out.append({
             "store_name": store_name,
-            "display_name": display_name_for(store_name),
+            "display_name": display_name,
             "city": city_for(store_name),
             "launch_date": launch_date,
             "days_since_launch": days_since_launch,
+            "ratings": {**ratings_for(display_name), "as_of": RATINGS_SNAPSHOT_DATE},
             "revenue": {
                 "daily": daily,
                 "wtd": _sum_window(daily, wtd_start),

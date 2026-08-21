@@ -28,6 +28,8 @@ def test_revenue_rolls_up_across_channels_and_aliases():
     assert day1["online"] == {"swiggy": 1000.0, "zomato": 500.0, "ownly": 0.0}
     assert day1["total"] == 1500.0
     assert day1["online_orders"] == 15
+    assert day0["orders_by_channel"] == {"swiggy": 2, "zomato": 0, "ownly": 0}
+    assert day1["orders_by_channel"] == {"swiggy": 10, "zomato": 5, "ownly": 0}
 
 
 def test_today_excluded_full_day_rule():
@@ -117,6 +119,23 @@ def test_ops_computed_cancellation_and_kpt_rolls_up_across_aliases():
     assert ops_daily[0]["order_count"] == 2
     assert ops_daily[1]["cancelled_orders"] == 1
     assert ops_daily[1]["kpt_p80_minutes"] == 4.1
+
+
+def test_ratings_attached_for_a_known_display_name():
+    roster = [{"store_name": "PNQ KK Tribeca", "launch_date": "2026-06-27", "aliases": ["PNQ KK Tribeca"]}]
+    payload = build_dashboard_payload(roster, [], [], date(2026, 8, 18))
+    ratings = payload["stores"][0]["ratings"]
+    assert ratings["swiggy"]["rating"] == 4.6
+    assert ratings["zomato"]["rating"] == 4.3
+    assert ratings["as_of"] == "2026-08-19"
+
+
+def test_ratings_missing_for_an_unmatched_store_are_null():
+    roster = [{"store_name": "DEL KK Brand New Store", "launch_date": "2026-08-18", "aliases": ["DEL KK Brand New Store"]}]
+    payload = build_dashboard_payload(roster, [], [], date(2026, 8, 18))
+    ratings = payload["stores"][0]["ratings"]
+    assert ratings["swiggy"]["rating"] is None
+    assert ratings["zomato"]["rating"] is None
 
 
 def test_ops_computed_missing_kpt_gives_null():
