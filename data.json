@@ -2674,6 +2674,45 @@
       }
     },
     {
+      "store_name": "IXC KK Nexus Elante Mall Pos",
+      "display_name": "Nexus Elante Mall",
+      "city": "Chandigarh Tricity",
+      "launch_date": "2026-08-21",
+      "days_since_launch": 0,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
+      }
+    },
+    {
       "store_name": "IXC KK Mohali Walk Pos",
       "display_name": "Mohali Walk",
       "city": "Chandigarh Tricity",
@@ -9227,45 +9266,6 @@
             "kpt_p80_minutes": 3.6
           }
         ]
-      }
-    },
-    {
-      "store_name": "PNQ KK FB Baner Pos",
-      "display_name": "FB Baner",
-      "city": "Pune",
-      "launch_date": "2026-07-25",
-      "days_since_launch": 27,
-      "ratings": {
-        "swiggy": {
-          "rating": null,
-          "count": null
-        },
-        "zomato": {
-          "rating": null,
-          "count": null
-        },
-        "as_of": "2026-08-19"
-      },
-      "revenue": {
-        "daily": [],
-        "wtd": {
-          "online": 0.0,
-          "total": 0.0,
-          "online_orders": 0
-        },
-        "mtd": {
-          "online": 0.0,
-          "total": 0.0,
-          "online_orders": 0
-        },
-        "lifetime": {
-          "online": 0.0,
-          "total": 0.0,
-          "online_orders": 0
-        }
-      },
-      "ops_computed": {
-        "daily": []
       }
     },
     {
@@ -18705,6 +18705,6 @@
       }
     }
   ],
-  "generated_at_ist": "2026-08-21T12:21:23.086512+05:30",
+  "generated_at_ist": "2026-08-21T14:59:05.094667+05:30",
   "window_days": 90
 }

@@ -93,6 +93,28 @@ def test_run_surfaces_offline_only_store_at_zero_online_revenue(tmp_path, monkey
     assert elpro["launch_date"] == "2026-08-20"
 
 
+def test_run_excludes_a_manually_overridden_offline_only_duplicate(tmp_path, monkeypatch):
+    # Real case: "PNQ KK FB Baner Pos" is the dine-in counter of the
+    # already-tracked online "PNQ KK Baner", per roster_overrides.py.
+    fake_path = tmp_path / "data.json"
+    monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+
+    online_history_rows = [
+        {"store_name": "PNQ KK Baner", "first_seen": "2026-07-02", "last_seen": "2026-08-20"},
+    ]
+    any_channel_history_rows = online_history_rows + [
+        {"store_name": "PNQ KK FB Baner Pos", "first_seen": "2026-07-25", "last_seen": "2026-08-20"},
+    ]
+    runner = _fake_runner(online_history_rows, [], [], any_channel_history_rows)
+
+    result = run(runner, date(2026, 8, 21), previous_store_count=None)
+
+    assert result is True
+    names = [s["store_name"] for s in json.loads(fake_path.read_text())["stores"]]
+    assert "PNQ KK FB Baner Pos" not in names
+    assert "PNQ KK Baner" in names
+
+
 def test_run_excludes_a_store_gone_silent_for_weeks(tmp_path, monkeypatch):
     # Real case: "BLR BIAL SHA POS" took 3 orders over 4 days in early
     # June, then nothing since — an abandoned/test kiosk, not a store
