@@ -10,8 +10,13 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 
-from build.queries import build_online_history_query, build_revenue_query, build_ops_metrics_query
-from build.rename_guard import resolve_new_stores
+from build.queries import (
+    build_online_history_query,
+    build_any_channel_history_query,
+    build_revenue_query,
+    build_ops_metrics_query,
+)
+from build.rename_guard import resolve_new_stores, filter_unknown_places
 from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES
 from build.clickhouse_client import run_query
 from build.aggregate import build_dashboard_payload
@@ -19,7 +24,20 @@ from build.sanity_guard import is_pull_valid
 
 IST = timezone(timedelta(hours=5, minutes=30))
 WINDOW_DAYS = 90
+STALE_DAYS = 14
 DATA_JSON_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data.json")
+
+
+def _is_stale(store_name, last_seen_by_name, today, stale_days=STALE_DAYS):
+    """A store with no order (any channel) in the last `stale_days` is
+    treated as closed/abandoned, not a "new store" worth tracking —
+    real case: a kiosk that took 3 orders over 4 days and went silent."""
+    last_seen = last_seen_by_name.get(store_name)
+    if last_seen is None:
+        return False
+    from datetime import date
+
+    return (today - date.fromisoformat(last_seen)).days > stale_days
 
 
 def today_ist():
@@ -40,7 +58,21 @@ def run(query_runner, today, previous_store_count):
     window_start = today - timedelta(days=WINDOW_DAYS)
 
     history_rows = query_runner(build_online_history_query())
+    online_store_names = {r["store_name"] for r in history_rows}
     roster = resolve_new_stores(history_rows, str(window_start), manual_excludes=MANUAL_EXCLUDE_STORE_NAMES)
+
+    # Stores that have opened (any channel — typically POS/dine-in) but
+    # never taken an online order are invisible to the online-only path
+    # above. Isolate that offline-only universe, then resolve its own
+    # rename chains the same way (the same rename pattern occurs on the
+    # POS side, just not simultaneously with the online side).
+    any_channel_history_rows = query_runner(build_any_channel_history_query())
+    offline_only_history = filter_unknown_places(any_channel_history_rows, online_store_names)
+    roster += resolve_new_stores(offline_only_history, str(window_start), manual_excludes=MANUAL_EXCLUDE_STORE_NAMES)
+
+    last_seen_by_name = {r["store_name"]: r["last_seen"] for r in history_rows}
+    last_seen_by_name.update({r["store_name"]: r["last_seen"] for r in any_channel_history_rows})
+    roster = [s for s in roster if not _is_stale(s["store_name"], last_seen_by_name, today)]
 
     if not is_pull_valid(roster, previous_store_count):
         print("ClickHouse pull failed sanity check — keeping existing data.json", file=sys.stderr)

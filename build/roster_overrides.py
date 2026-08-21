@@ -1,14 +1,11 @@
 """Manual escape hatch for renames the automatic guard in `rename_guard.py`
-can't safely catch (single-word store names, below its 2-token overlap
-threshold). Add an entry here, with the reasoning and the confirmed true
-launch date, whenever a spot-check finds one.
+can't safely catch. Add an entry here, with the reasoning and the
+confirmed true launch date, whenever a spot-check finds one.
+
+(Kharar/Panchkula, the original reason this file exists, are now caught
+automatically by the exact-token-match rule in `_name_signature_match`
+— left empty rather than removed so the mechanism is ready for the next
+gap a spot-check turns up.)
 """
 
-MANUAL_EXCLUDE_STORE_NAMES = {
-    # True launch 2026-04-30 (confirmed via ClickHouse); renamed to this
-    # on 2026-05-28. "Kharar" is a single token so the automatic guard's
-    # overlap-count safety gate doesn't catch it.
-    "IXC KK Kharar - Kripsy Kreme - NCR",
-    # True launch 2026-04-30 (confirmed via ClickHouse); same reason as above.
-    "IXC KK Panchkula - Kripsy Kreme - NCR",
-}
+MANUAL_EXCLUDE_STORE_NAMES = set()

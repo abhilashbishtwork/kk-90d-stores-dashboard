@@ -2,6 +2,7 @@ from datetime import date
 from build.queries import (
     BRAND_ID,
     build_online_history_query,
+    build_any_channel_history_query,
     build_revenue_query,
     build_ops_metrics_query,
 )
@@ -15,6 +16,15 @@ def test_history_query_scopes_to_brand_and_online_channels_only():
     sql = build_online_history_query()
     assert f"brand_id = {BRAND_ID}" in sql
     assert "channel IN ('swiggy', 'zomato', 'ownly')" in sql
+    assert "GROUP BY store_name" in sql
+    assert "min(toDate(created_at_ist))" in sql
+    assert "max(toDate(created_at_ist))" in sql
+
+
+def test_any_channel_history_query_scopes_to_brand_only_no_channel_filter():
+    sql = build_any_channel_history_query()
+    assert f"brand_id = {BRAND_ID}" in sql
+    assert "channel" not in sql
     assert "GROUP BY store_name" in sql
     assert "min(toDate(created_at_ist))" in sql
     assert "max(toDate(created_at_ist))" in sql

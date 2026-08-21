@@ -39,25 +39,46 @@ def _days_between(earlier_iso, later_iso):
     return (l - e).days
 
 
+def _name_signature_match(name_a, name_b):
+    """True if two store_names plausibly name the same physical place —
+    same leading city/area code, plus a strongly overlapping set of
+    remaining non-filler tokens. No time component: this is a pure
+    name-identity check, reused both for rename-chain detection (with an
+    added time-adjacency requirement) and for cross-channel dedup."""
+    tokens_a = _tokens(name_a)
+    tokens_b = _tokens(name_b)
+    if not tokens_a or not tokens_b:
+        return False
+    if tokens_a[0] != tokens_b[0]:
+        return False
+
+    rest_a = set(tokens_a[1:])
+    rest_b = set(tokens_b[1:])
+    if not rest_a or not rest_b:
+        return False
+
+    # An *exact* remaining-token match (e.g. {"kharar"} == {"kharar"}, or
+    # {"egl"} == {"egl"}) is strong evidence on its own, even for a
+    # single distinctive place-name token — this is what catches
+    # single-word renames (Kharar, Panchkula, EGL) that the ratio
+    # threshold below deliberately can't, without loosening that
+    # threshold and risking false merges between genuinely different
+    # generically-named places (e.g. "Forum" vs "Forum KML").
+    if rest_a == rest_b:
+        return True
+
+    if len(rest_a) < MIN_TOKEN_COUNT or len(rest_b) < MIN_TOKEN_COUNT:
+        return False
+
+    overlap = len(rest_a & rest_b)
+    ratio = overlap / min(len(rest_a), len(rest_b))
+    return ratio >= MIN_OVERLAP_RATIO
+
+
 def _is_rename(predecessor, candidate):
     if _days_between(predecessor["last_seen"], candidate["first_seen"]) not in range(0, MAX_GAP_DAYS + 1):
         return False
-
-    pred_tokens = _tokens(predecessor["store_name"])
-    cand_tokens = _tokens(candidate["store_name"])
-    if not pred_tokens or not cand_tokens:
-        return False
-    if pred_tokens[0] != cand_tokens[0]:
-        return False
-
-    pred_rest = set(pred_tokens[1:])
-    cand_rest = set(cand_tokens[1:])
-    if len(pred_rest) < MIN_TOKEN_COUNT or len(cand_rest) < MIN_TOKEN_COUNT:
-        return False
-
-    overlap = len(pred_rest & cand_rest)
-    ratio = overlap / min(len(pred_rest), len(cand_rest))
-    return ratio >= MIN_OVERLAP_RATIO
+    return _name_signature_match(predecessor["store_name"], candidate["store_name"])
 
 
 def resolve_new_stores(history_rows, window_start, manual_excludes=frozenset()):
@@ -102,3 +123,26 @@ def resolve_new_stores(history_rows, window_start, manual_excludes=frozenset()):
             })
 
     return results
+
+
+def filter_unknown_places(history_rows, known_names):
+    """Drop any row that is the same physical place (exactly or by name
+    signature) as one of `known_names`.
+
+    Used to isolate the offline-only universe — stores that have opened
+    (any channel, typically POS/dine-in) but never taken an online
+    order — from the full any-channel history, *before* running that
+    subset back through `resolve_new_stores`. A POS-suffixed variant of
+    an already-tracked online store_name (e.g. "X Pos" alongside "X")
+    must not resurface here as a phantom second entry; a genuine
+    offline-only rename (the same June-2026 rename pattern occurs on
+    the POS side too) still needs the full rename-chain treatment, not
+    a flat first-seen filter, so this only trims duplicates against the
+    *known* (online) universe — it does not resolve offline-only
+    rename chains itself.
+    """
+    return [
+        row for row in history_rows
+        if row["store_name"] not in known_names
+        and not any(_name_signature_match(row["store_name"], known) for known in known_names)
+    ]

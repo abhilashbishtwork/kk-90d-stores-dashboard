@@ -23,7 +23,7 @@ def _r(rating, count):
 
 
 RATINGS_BY_DISPLAY_NAME = {
-    "Omaxe Chandni Chowk": {"swiggy": _r(None, None), "zomato": _r(None, None)},
+    "Omaxe Chandni Chowk": {"swiggy": _r(4.2, "<3"), "zomato": _r(None, None)},
     "Niyati Plaza": {"swiggy": _r(4.6, "<3"), "zomato": _r(4.0, 4)},
     "Sangvi": {"swiggy": _r(4.6, "<3"), "zomato": _r(4.0, 3)},
     "Law College": {"swiggy": _r(4.6, "<3"), "zomato": _r(None, None)},

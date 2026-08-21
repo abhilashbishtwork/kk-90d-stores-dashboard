@@ -2635,6 +2635,84 @@
       }
     },
     {
+      "store_name": "BLR KK Manyata Tech Park G Block POS",
+      "display_name": "Manyata Tech Park G Block",
+      "city": "Bengaluru",
+      "launch_date": "2026-06-15",
+      "days_since_launch": 67,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
+      }
+    },
+    {
+      "store_name": "IXC KK Mohali Walk Pos",
+      "display_name": "Mohali Walk",
+      "city": "Chandigarh Tricity",
+      "launch_date": "2026-07-19",
+      "days_since_launch": 33,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
+      }
+    },
+    {
       "store_name": "IXC KK CP 67 Mall - Kripsy Kreme - NCR",
       "display_name": "CP 67 Mall",
       "city": "Chandigarh Tricity",
@@ -3917,7 +3995,7 @@
             "date": "2026-08-19",
             "online": {
               "swiggy": 1497.01,
-              "zomato": 6835.719999999999,
+              "zomato": 6835.72,
               "ownly": 0.0
             },
             "total": 8332.73,
@@ -5107,6 +5185,45 @@
       }
     },
     {
+      "store_name": "JAI KK Mall of Jaipur Pos",
+      "display_name": "Mall of Jaipur",
+      "city": "Jaipur",
+      "launch_date": "2026-07-15",
+      "days_since_launch": 37,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
+      }
+    },
+    {
       "store_name": "DEL KK Omaxe Chandni Chowk",
       "display_name": "Omaxe Chandni Chowk",
       "city": "NCR",
@@ -5114,8 +5231,8 @@
       "days_since_launch": 18,
       "ratings": {
         "swiggy": {
-          "rating": null,
-          "count": null
+          "rating": 4.2,
+          "count": "<3"
         },
         "zomato": {
           "rating": null,
@@ -5415,6 +5532,45 @@
             "kpt_p80_minutes": 4.0
           }
         ]
+      }
+    },
+    {
+      "store_name": "NOI KK GIP Mall Pos",
+      "display_name": "GIP Mall",
+      "city": "NCR",
+      "launch_date": "2026-07-23",
+      "days_since_launch": 29,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
       }
     },
     {
@@ -6012,6 +6168,84 @@
             "kpt_p80_minutes": 22.0
           }
         ]
+      }
+    },
+    {
+      "store_name": "GGN KK ODC GGN",
+      "display_name": "ODC GGN",
+      "city": "NCR",
+      "launch_date": "2026-05-25",
+      "days_since_launch": 88,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
+      }
+    },
+    {
+      "store_name": "PNQ KK Elpro Mall",
+      "display_name": "Elpro Mall",
+      "city": "Pune",
+      "launch_date": "2026-08-20",
+      "days_since_launch": 1,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
       }
     },
     {
@@ -8993,6 +9227,45 @@
             "kpt_p80_minutes": 3.6
           }
         ]
+      }
+    },
+    {
+      "store_name": "PNQ KK FB Baner Pos",
+      "display_name": "FB Baner",
+      "city": "Pune",
+      "launch_date": "2026-07-25",
+      "days_since_launch": 27,
+      "ratings": {
+        "swiggy": {
+          "rating": null,
+          "count": null
+        },
+        "zomato": {
+          "rating": null,
+          "count": null
+        },
+        "as_of": "2026-08-19"
+      },
+      "revenue": {
+        "daily": [],
+        "wtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "mtd": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        },
+        "lifetime": {
+          "online": 0.0,
+          "total": 0.0,
+          "online_orders": 0
+        }
+      },
+      "ops_computed": {
+        "daily": []
       }
     },
     {
@@ -18432,6 +18705,6 @@
       }
     }
   ],
-  "generated_at_ist": "2026-08-21T11:32:00.713431+05:30",
+  "generated_at_ist": "2026-08-21T12:21:23.086512+05:30",
   "window_days": 90
 }

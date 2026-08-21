@@ -1,4 +1,4 @@
-from build.rename_guard import resolve_new_stores
+from build.rename_guard import resolve_new_stores, filter_unknown_places
 
 WINDOW_START = "2026-05-23"
 
@@ -72,3 +72,39 @@ def test_manual_exclude_filters_out_a_known_rename_the_heuristic_missed():
     ]
     result = resolve_new_stores(history, WINDOW_START, manual_excludes={"IXC KK Kharar - Kripsy Kreme - NCR"})
     assert result == []
+
+
+def test_filter_unknown_places_keeps_a_genuinely_unrelated_store():
+    history = [{"store_name": "PNQ KK Elpro Mall", "first_seen": "2026-08-20", "last_seen": "2026-08-20"}]
+    result = filter_unknown_places(history, known_names={"PNQ KK Ravet"})
+    assert result == history
+
+
+def test_filter_unknown_places_drops_an_exact_name_match():
+    history = [{"store_name": "PNQ KK Ravet", "first_seen": "2026-07-17", "last_seen": "2026-08-20"}]
+    result = filter_unknown_places(history, known_names={"PNQ KK Ravet"})
+    assert result == []
+
+
+def test_filter_unknown_places_drops_a_pos_suffixed_variant_of_a_known_online_name():
+    # "DEL KK Omaxe Chandni Chowk Pos" is the same physical store as the
+    # already-tracked online "DEL KK Omaxe Chandni Chowk" — must not
+    # resurface as a second, zero-revenue phantom entry.
+    history = [{"store_name": "DEL KK Omaxe Chandni Chowk Pos", "first_seen": "2026-07-19", "last_seen": "2026-08-20"}]
+    result = filter_unknown_places(history, known_names={"DEL KK Omaxe Chandni Chowk"})
+    assert result == []
+
+
+def test_filter_unknown_places_drops_an_exact_single_token_match():
+    # A single-word place name (no room for a 2-token overlap check) is
+    # still confidently the same place when its remaining token set is
+    # *exactly* equal, not just similar.
+    history = [{"store_name": "IXC KK Kharar Pos", "first_seen": "2026-07-19", "last_seen": "2026-08-20"}]
+    result = filter_unknown_places(history, known_names={"IXC KK Kharar - Kripsy Kreme - NCR"})
+    assert result == []
+
+
+def test_filter_unknown_places_keeps_a_different_single_token_place_in_the_same_city():
+    history = [{"store_name": "IXC KK Mohali Walk", "first_seen": "2026-07-19", "last_seen": "2026-08-20"}]
+    result = filter_unknown_places(history, known_names={"IXC KK Kharar - Kripsy Kreme - NCR"})
+    assert result == history
