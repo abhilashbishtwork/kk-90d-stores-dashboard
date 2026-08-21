@@ -47,3 +47,26 @@ MANUAL_ALIAS_OVERRIDES = {
     "IXC KK Mohali Phase 9 - Kripsy Kreme - NCR": "IXC KK Mohali Walk Pos",
     "JAI KK Vaishali Nagar Online": "JAI KK Mall of Jaipur Pos",
 }
+
+# Fully manually-asserted roster entries — for a relocation with no
+# ClickHouse-detectable signal at all (no rename, no new POS entry,
+# same store_name continuously active before and after the move), so
+# there's nothing for rename_guard/filter_unknown_places to find or for
+# MANUAL_ALIAS_OVERRIDES to attach to. `launch_date` here IS the
+# asserted relocation date — aggregate.py's launch_date floor (see
+# build_dashboard_payload) already excludes each alias's pre-launch
+# history, so it's safe to alias in a store_name with years of prior
+# data under a different physical identity.
+MANUAL_ADDITIONAL_STORES = [
+    {
+        # Confirmed by the user (2026-08-21): a large Mantri Mall store
+        # opened 2026-08-13, continuing to order through the existing
+        # "BLR KK Mantri Online" listing (active continuously since
+        # 2025-01-29, same store_name before and after — the old
+        # smaller store's history predates 2026-08-13 and is excluded
+        # by the launch_date floor).
+        "store_name": "BLR KK Mantri Mall",
+        "launch_date": "2026-08-13",
+        "aliases": ["BLR KK Mantri Online"],
+    },
+]

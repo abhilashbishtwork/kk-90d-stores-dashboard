@@ -21,6 +21,7 @@ def _fake_runner(online_history_rows, revenue_rows, ops_rows, any_channel_histor
 def test_run_writes_data_json_with_dynamically_resolved_roster(tmp_path, monkeypatch):
     fake_path = tmp_path / "data.json"
     monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+    monkeypatch.setattr("build.build_data.MANUAL_ADDITIONAL_STORES", [])
 
     history_rows = [
         {"store_name": "PNQ KK Ravet", "first_seen": "2026-07-17", "last_seen": "2026-08-20"},
@@ -45,6 +46,7 @@ def test_run_aborts_and_keeps_existing_file_when_roster_is_empty(tmp_path, monke
     fake_path = tmp_path / "data.json"
     fake_path.write_text('{"stores": [], "note": "yesterday"}')
     monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+    monkeypatch.setattr("build.build_data.MANUAL_ADDITIONAL_STORES", [])
 
     runner = _fake_runner([], [], [])
 
@@ -187,6 +189,35 @@ def test_run_excludes_an_old_store_renamed_on_the_offline_only_side(tmp_path, mo
     names = [s["store_name"] for s in json.loads(fake_path.read_text())["stores"]]
     assert "BLR KK- EGL POS" not in names
     assert "BLR Krispy Kreme- EGL POS" not in names
+
+
+def test_run_includes_a_manually_added_store_with_its_own_launch_date(tmp_path, monkeypatch):
+    # Real case: Mantri Mall relocated to a bigger location on
+    # 2026-08-13 but kept ordering through the SAME continuously-active
+    # online store_name (no rename, no gap) — there is no ClickHouse
+    # signal at all for the relocation date, so it must be asserted
+    # manually rather than derived.
+    fake_path = tmp_path / "data.json"
+    monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+    monkeypatch.setattr("build.build_data.MANUAL_ADDITIONAL_STORES", [
+        {"store_name": "BLR KK Mantri Mall", "launch_date": "2026-08-13", "aliases": ["BLR KK Mantri Online"]},
+    ])
+
+    online_history_rows = [
+        {"store_name": "PNQ KK Ravet", "first_seen": "2026-07-17", "last_seen": "2026-08-20"},
+    ]
+    revenue_rows = [
+        {"order_date": "2026-06-01", "store_name": "BLR KK Mantri Online", "channel": "swiggy", "revenue": "9999", "order_count": "50"},
+        {"order_date": "2026-08-14", "store_name": "BLR KK Mantri Online", "channel": "swiggy", "revenue": "500", "order_count": "3"},
+    ]
+    runner = _fake_runner(online_history_rows, revenue_rows, [])
+
+    result = run(runner, date(2026, 8, 21), previous_store_count=None)
+
+    assert result is True
+    mantri = next(s for s in json.loads(fake_path.read_text())["stores"] if s["store_name"] == "BLR KK Mantri Mall")
+    assert mantri["launch_date"] == "2026-08-13"
+    assert [d["date"] for d in mantri["revenue"]["daily"]] == ["2026-08-14"]
 
 
 def test_read_previous_store_count_from_existing_file(tmp_path):

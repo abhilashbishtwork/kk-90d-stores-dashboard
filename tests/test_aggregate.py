@@ -181,6 +181,23 @@ def test_ratings_missing_for_an_unmatched_store_are_null():
     assert ratings["google"]["rating"] is None
 
 
+def test_revenue_before_launch_date_is_excluded_from_daily():
+    # Real case: a store that relocated to a new location can have an
+    # aliased online store_name whose ClickHouse history predates the
+    # relocation by months (the account never stopped ordering) — that
+    # pre-relocation revenue must not leak into the new entry's ramp.
+    roster = [{"store_name": "BLR KK Mantri Mall", "launch_date": "2026-08-13", "aliases": ["BLR KK Mantri Online"]}]
+    revenue_rows = [
+        {"order_date": "2026-06-01", "store_name": "BLR KK Mantri Online", "channel": "swiggy", "revenue": "9999", "order_count": "50"},
+        {"order_date": "2026-08-14", "store_name": "BLR KK Mantri Online", "channel": "swiggy", "revenue": "500", "order_count": "3"},
+    ]
+    payload = build_dashboard_payload(roster, revenue_rows, [], [], date(2026, 8, 15))
+    daily = payload["stores"][0]["revenue"]["daily"]
+    assert len(daily) == 1
+    assert daily[0]["date"] == "2026-08-14"
+    assert daily[0]["total"] == 500.0
+
+
 def test_ops_computed_missing_kpt_gives_null():
     ops_rows = [
         {"order_date": "2026-07-17", "store_name": "PNQ KK Ravet", "channel": "zomato",

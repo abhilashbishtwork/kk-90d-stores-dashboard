@@ -18,7 +18,7 @@ from build.queries import (
     build_ops_metrics_query,
 )
 from build.rename_guard import resolve_new_stores, filter_unknown_places
-from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES, MANUAL_ALIAS_OVERRIDES
+from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES, MANUAL_ALIAS_OVERRIDES, MANUAL_ADDITIONAL_STORES
 from build.clickhouse_client import run_query
 from build.aggregate import build_dashboard_payload
 from build.sanity_guard import is_pull_valid
@@ -79,6 +79,11 @@ def run(query_runner, today, previous_store_count):
         target = roster_by_name.get(target_name)
         if target is not None:
             target["aliases"].append(alias_name)
+
+    # Fully manually-asserted entries (a relocation with no
+    # ClickHouse-detectable signal at all) — copy the aliases list so
+    # repeated runs never mutate the shared override definition.
+    roster += [{**s, "aliases": list(s["aliases"])} for s in MANUAL_ADDITIONAL_STORES]
 
     last_seen_by_name = {r["store_name"]: r["last_seen"] for r in history_rows}
     last_seen_by_name.update({r["store_name"]: r["last_seen"] for r in any_channel_history_rows})

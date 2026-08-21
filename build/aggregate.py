@@ -92,8 +92,16 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
     stores_out = []
     for store in roster:
         store_name = store["store_name"]
+        launch_date = store["launch_date"]
         daily = []
         for d in complete_dates:
+            # A store's aliases can carry ClickHouse history predating its
+            # own launch_date (e.g. a relocated store aliased to an old,
+            # continuously-active RID) — that pre-launch activity belongs
+            # to a different physical era and must not leak into this
+            # entry's ramp figures.
+            if d < launch_date:
+                continue
             entry = by_store_date.get((store_name, d))
             if entry is None:
                 continue
@@ -107,7 +115,6 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
                 "dine_in_orders": entry["dine_in_orders"],
             })
 
-        launch_date = store["launch_date"]
         days_since_launch = (today_ist - _parse_date(launch_date)).days
         display_name = display_name_for(store_name)
 
