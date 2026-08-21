@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a6b3f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-512.png">
+  <link rel="apple-touch-icon" href="assets/icon-512.png">
+  <title>Krispy Kreme · New Stores (90d)</title>
+  <link rel="stylesheet" href="assets/dashboard.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1 id="page-title">Krispy Kreme <span class="dot">·</span> New Stores (90d)</h1>
+      <p id="generated-at"></p>
+    </div>
+
+    <div class="store-picker-row" id="store-picker-row"></div>
+
+    <p class="kpi-date-banner" id="kpi-date-banner"></p>
+    <div class="kpis" id="kpis"></div>
+
+    <section id="alerts">
+      <h2>Issues</h2>
+      <ul id="alerts-list"></ul>
+    </section>
+
+    <section class="category-filter" id="category-filter-row"></section>
+
+    <div class="date-range-row" id="date-range-row"></div>
+
+    <section id="table1">
+      <h2>Store detail — revenue &amp; orders since launch</h2>
+      <div class="table-scroll"><table id="detail-table"><thead></thead><tbody></tbody></table></div>
+    </section>
+
+    <section id="table2">
+      <h2>Store health — cancellation &amp; KPT</h2>
+      <div class="table-scroll"><table id="health-table"><thead></thead><tbody></tbody></table></div>
+    </section>
+
+    <section id="revenue">
+      <h2>Revenue by store</h2>
+      <div class="store-grid" id="store-grid"></div>
+    </section>
+  </div>
+
+  <script src="assets/alerts.js"></script>
+  <script src="assets/dashboard.js"></script>
+</body>
+</html>
