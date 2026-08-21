@@ -521,11 +521,23 @@ function renderDateRangeRow(availableDates, range, onChange) {
 
 // ---------- generic sortable table ----------
 
-function renderSortableTable(tableId, columns, rows, sortState) {
+function renderSortableTable(tableId, columns, rows, sortState, groups) {
   const table = document.getElementById(tableId);
   const thead = table.querySelector('thead');
   const tbody = table.querySelector('tbody');
   thead.innerHTML = ''; tbody.innerHTML = '';
+
+  if (groups) {
+    const groupRow = document.createElement('tr');
+    groupRow.className = 'group-header-row';
+    for (const g of groups) {
+      const el = document.createElement('th');
+      el.colSpan = g.span;
+      el.textContent = g.label;
+      groupRow.appendChild(el);
+    }
+    thead.appendChild(groupRow);
+  }
 
   const headRow = document.createElement('tr');
   columns.forEach((col, i) => {
@@ -535,7 +547,7 @@ function renderSortableTable(tableId, columns, rows, sortState) {
     el.addEventListener('click', () => {
       if (sortState.col === i) sortState.dir *= -1;
       else { sortState.col = i; sortState.dir = 1; }
-      renderSortableTable(tableId, columns, rows, sortState);
+      renderSortableTable(tableId, columns, rows, sortState, groups);
     });
     headRow.appendChild(el);
   });
@@ -574,7 +586,8 @@ function renderSortableTable(tableId, columns, rows, sortState) {
 
 function sumDailyInRange(daily, start, end) {
   let onlineRevenue = 0, offlineRevenue = 0, onlineOrders = 0, offlineOrders = 0, days = 0;
-  let swiggyRevenue = 0, zomatoRevenue = 0, swiggyOrders = 0, zomatoOrders = 0;
+  let swiggyRevenue = 0, zomatoRevenue = 0, ownlyRevenue = 0;
+  let swiggyOrders = 0, zomatoOrders = 0, ownlyOrders = 0;
   for (const d of daily) {
     if (d.date >= start && d.date <= end) {
       onlineRevenue += Object.values(d.online).reduce((a, b) => a + b, 0);
@@ -583,12 +596,17 @@ function sumDailyInRange(daily, start, end) {
       offlineOrders += d.dine_in_orders;
       swiggyRevenue += d.online.swiggy;
       zomatoRevenue += d.online.zomato;
+      ownlyRevenue += d.online.ownly;
       swiggyOrders += d.orders_by_channel.swiggy;
       zomatoOrders += d.orders_by_channel.zomato;
+      ownlyOrders += d.orders_by_channel.ownly;
       days++;
     }
   }
-  return { onlineRevenue, offlineRevenue, onlineOrders, offlineOrders, swiggyRevenue, zomatoRevenue, swiggyOrders, zomatoOrders, days };
+  return {
+    onlineRevenue, offlineRevenue, onlineOrders, offlineOrders,
+    swiggyRevenue, zomatoRevenue, ownlyRevenue, swiggyOrders, zomatoOrders, ownlyOrders, days,
+  };
 }
 
 function fmtThousands(n) {
@@ -603,14 +621,21 @@ function buildDetailRow(s, range) {
     store: s.display_name,
     launchDate: s.launch_date,
     daysSinceLaunch: s.days_since_launch,
-    opd: perDay(sums.onlineOrders + sums.offlineOrders),
-    revPerDay: perDay(sums.onlineRevenue + sums.offlineRevenue),
-    offOpd: perDay(sums.offlineOrders),
-    offRevPerDay: perDay(sums.offlineRevenue),
-    onOpd: perDay(sums.onlineOrders),
-    onRevPerDay: perDay(sums.onlineRevenue),
-    swiggyOpd: perDay(sums.swiggyOrders),
-    zomatoOpd: perDay(sums.zomatoOrders),
+    // Lifetime, not range-scoped — whether a store has a dine-in
+    // channel at all shouldn't flicker as the date filter changes.
+    hasOffline: s.revenue.lifetime.dine_in_orders > 0,
+    opdTotal: perDay(sums.onlineOrders + sums.offlineOrders),
+    opdOffline: perDay(sums.offlineOrders),
+    opdOnline: perDay(sums.onlineOrders),
+    opdSwiggy: perDay(sums.swiggyOrders),
+    opdZomato: perDay(sums.zomatoOrders),
+    opdOwnly: perDay(sums.ownlyOrders),
+    revTotal: perDay(sums.onlineRevenue + sums.offlineRevenue),
+    revOffline: perDay(sums.offlineRevenue),
+    revOnline: perDay(sums.onlineRevenue),
+    revSwiggy: perDay(sums.swiggyRevenue),
+    revZomato: perDay(sums.zomatoRevenue),
+    revOwnly: perDay(sums.ownlyRevenue),
   };
 }
 
@@ -624,26 +649,50 @@ function revPerDayCell(cell, value) {
   cell.appendChild(scaledChip(fmtThousands(value), value, 'minRevPerDay'));
 }
 
+// Off-OPD/Off-Rev/day (and the Google storefront rating) only apply to
+// stores with a dine-in channel at all — a pure online/cloud-kitchen
+// store shows a plain dash, not a "0.0" that reads as "zero offline
+// sales" when really the metric doesn't apply. Stores that do have a
+// dine-in channel get a green highlight so they're easy to spot at a
+// glance in a mostly-online-only table.
+function offlineOnlyCell(cell, hasOffline, renderValue) {
+  if (!hasOffline) { cell.textContent = '-'; return; }
+  cell.classList.add('offline-highlight');
+  renderValue();
+}
+
 const DETAIL_COLUMNS = [
   { label: 'City', value: r => r.city, display: r => r.city },
   { label: 'Store', value: r => r.store, display: r => r.store, storeCell: true },
   { label: 'Live Since', value: r => r.launchDate, display: r => fmtDateLabel(r.launchDate) },
   { label: 'Days Live', value: r => r.daysSinceLaunch, numeric: true, display: r => String(r.daysSinceLaunch) },
-  { label: 'OPD', value: r => r.opd, numeric: true, render: (cell, r) => opdCell(cell, r.opd) },
-  { label: 'Rev/day (k)', value: r => r.revPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revPerDay) },
-  { label: 'Off-OPD', value: r => r.offOpd, numeric: true, render: (cell, r) => opdCell(cell, r.offOpd) },
-  { label: 'Off-Rev/day (k)', value: r => r.offRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.offRevPerDay) },
-  { label: 'On-OPD', value: r => r.onOpd, numeric: true, render: (cell, r) => opdCell(cell, r.onOpd) },
-  { label: 'On-Rev/day (k)', value: r => r.onRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.onRevPerDay) },
-  { label: 'S-OPD', value: r => r.swiggyOpd, numeric: true, render: (cell, r) => opdCell(cell, r.swiggyOpd) },
-  { label: 'Z-OPD', value: r => r.zomatoOpd, numeric: true, render: (cell, r) => opdCell(cell, r.zomatoOpd) },
+  // ---- OPD group ----
+  { label: 'Total', value: r => r.opdTotal, numeric: true, render: (cell, r) => opdCell(cell, r.opdTotal) },
+  { label: 'Offline', value: r => r.opdOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => opdCell(cell, r.opdOffline)) },
+  { label: 'Online', value: r => r.opdOnline, numeric: true, render: (cell, r) => opdCell(cell, r.opdOnline) },
+  { label: 'Swiggy', value: r => r.opdSwiggy, numeric: true, render: (cell, r) => opdCell(cell, r.opdSwiggy) },
+  { label: 'Zomato', value: r => r.opdZomato, numeric: true, render: (cell, r) => opdCell(cell, r.opdZomato) },
+  { label: 'Ownly', value: r => r.opdOwnly, numeric: true, render: (cell, r) => opdCell(cell, r.opdOwnly) },
+  // ---- Revenue group ----
+  { label: 'Total', value: r => r.revTotal, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revTotal) },
+  { label: 'Offline', value: r => r.revOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => revPerDayCell(cell, r.revOffline)) },
+  { label: 'Online', value: r => r.revOnline, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revOnline) },
+  { label: 'Swiggy', value: r => r.revSwiggy, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revSwiggy) },
+  { label: 'Zomato', value: r => r.revZomato, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revZomato) },
+  { label: 'Ownly', value: r => r.revOwnly, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revOwnly) },
+];
+
+const DETAIL_COLUMN_GROUPS = [
+  { label: '', span: 4 },
+  { label: 'OPD', span: 6 },
+  { label: 'Revenue (₹k/day)', span: 6 },
 ];
 
 const detailSortState = { col: 3, dir: 1 };
 
 function renderDetailTable(stores, range) {
   const rows = stores.map(s => buildDetailRow(s, range));
-  renderSortableTable('detail-table', DETAIL_COLUMNS, rows, detailSortState);
+  renderSortableTable('detail-table', DETAIL_COLUMNS, rows, detailSortState, DETAIL_COLUMN_GROUPS);
 }
 
 // ---------- Table 2: cancellation / KPT ----------
@@ -669,6 +718,7 @@ function buildHealthRow(s, range) {
     city: s.city,
     store: s.display_name,
     launchDate: s.launch_date,
+    hasOffline: s.revenue.lifetime.dine_in_orders > 0,
     cancellationPct: computed.cancellationPct,
     kptP80Minutes: computed.kptP80Minutes,
     swiggyRating: s.ratings.swiggy,
@@ -699,7 +749,7 @@ const HEALTH_COLUMNS = [
   },
   {
     label: 'Google Storefront', value: r => r.googleRating.rating, numeric: true,
-    render: (cell, r) => ratingChipCell(cell, r.googleRating),
+    render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => ratingChipCell(cell, r.googleRating)),
   },
 ];
 

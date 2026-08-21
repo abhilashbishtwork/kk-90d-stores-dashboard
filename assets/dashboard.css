@@ -177,3 +177,10 @@ table#detail-table th, table#health-table th {
 table#detail-table tbody tr:hover, table#health-table tbody tr:hover { background: var(--bg); }
 table#detail-table td.store-cell, table#health-table td.store-cell { font-weight: 700; }
 td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- grouped column headers (detail table: OPD / Revenue) ---------- */
+.group-header-row th { text-align: center; font-size: 0.68rem; }
+.group-header-row + tr th { top: 34px; }
+
+/* ---------- offline-only metrics (Off-OPD, Off-Rev/day, Google storefront) ---------- */
+td.offline-highlight { background: var(--good-bg); }
