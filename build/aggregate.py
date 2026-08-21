@@ -21,7 +21,7 @@ def _empty_channel_order_counts():
 
 
 def _empty_window():
-    return {"online": 0.0, "total": 0.0, "online_orders": 0}
+    return {"online": 0.0, "total": 0.0, "online_orders": 0, "dine_in": 0.0, "dine_in_orders": 0}
 
 
 def _sum_window(daily, start_date_str):
@@ -31,10 +31,22 @@ def _sum_window(daily, start_date_str):
             total["online"] += sum(d["online"].values())
             total["total"] += d["total"]
             total["online_orders"] += d["online_orders"]
+            total["dine_in"] += d["dine_in"]
+            total["dine_in_orders"] += d["dine_in_orders"]
     return total
 
 
-def build_dashboard_payload(roster, revenue_rows, ops_rows, today_ist):
+def _empty_date_entry():
+    return {
+        "online": _empty_channel_totals(),
+        "online_orders": 0,
+        "orders_by_channel": _empty_channel_order_counts(),
+        "dine_in": 0.0,
+        "dine_in_orders": 0,
+    }
+
+
+def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, today_ist):
     today_str = str(today_ist)
     alias_to_canonical = {alias: s["store_name"] for s in roster for alias in s["aliases"]}
 
@@ -44,14 +56,19 @@ def build_dashboard_payload(roster, revenue_rows, ops_rows, today_ist):
         if canonical is None:
             continue
         key = (canonical, r["order_date"])
-        entry = by_store_date.setdefault(key, {
-            "online": _empty_channel_totals(),
-            "online_orders": 0,
-            "orders_by_channel": _empty_channel_order_counts(),
-        })
+        entry = by_store_date.setdefault(key, _empty_date_entry())
         entry["online"][r["channel"]] = entry["online"].get(r["channel"], 0.0) + float(r["revenue"])
         entry["online_orders"] += int(r["order_count"])
         entry["orders_by_channel"][r["channel"]] = entry["orders_by_channel"].get(r["channel"], 0) + int(r["order_count"])
+
+    for r in offline_revenue_rows:
+        canonical = alias_to_canonical.get(r["store_name"])
+        if canonical is None:
+            continue
+        key = (canonical, r["order_date"])
+        entry = by_store_date.setdefault(key, _empty_date_entry())
+        entry["dine_in"] += float(r["revenue"])
+        entry["dine_in_orders"] += int(r["order_count"])
 
     by_store_ops = {}
     for r in ops_rows:
@@ -83,9 +100,11 @@ def build_dashboard_payload(roster, revenue_rows, ops_rows, today_ist):
             daily.append({
                 "date": d,
                 "online": entry["online"],
-                "total": sum(entry["online"].values()),
+                "total": sum(entry["online"].values()) + entry["dine_in"],
                 "online_orders": entry["online_orders"],
                 "orders_by_channel": entry["orders_by_channel"],
+                "dine_in": entry["dine_in"],
+                "dine_in_orders": entry["dine_in_orders"],
             })
 
         launch_date = store["launch_date"]

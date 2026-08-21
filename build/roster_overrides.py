@@ -7,6 +7,19 @@ automatically by the exact-token-match rule in `_name_signature_match`.)
 """
 
 MANUAL_EXCLUDE_STORE_NAMES = {
+    # Confirmed by the user (2026-08-21) not a real store — an
+    # onboarding/ops artifact, same class of noise as the tiny
+    # same-day artifact rows documented in
+    # [[project_krispy_kreme_online_dashboard]].
+    "GGN KK ODC GGN",
+}
+
+# Cross-channel alias merges: `key` is a store_name that should NOT be
+# its own roster entry, but should have its orders rolled into the
+# entry canonically named `value`. Distinct from MANUAL_EXCLUDE_STORE_
+# NAMES above — that drops a name's data entirely; this preserves it,
+# just attributed to the right physical store.
+MANUAL_ALIAS_OVERRIDES = {
     # "PNQ KK FB Baner Pos" (POS-only, first order 2026-07-25) is the
     # dine-in counter of the SAME physical store as the already-tracked
     # online "PNQ KK Baner" (live since 2026-07-02) — not a second, new
@@ -17,5 +30,5 @@ MANUAL_EXCLUDE_STORE_NAMES = {
     # (1 remaining token) vs "FB Baner" (2 remaining tokens) falls
     # outside both its exact-match and ratio-with-minimum-token-count
     # rules — a real, accepted blind spot, not a bug to chase further.
-    "PNQ KK FB Baner Pos",
+    "PNQ KK FB Baner Pos": "PNQ KK Baner",
 }

@@ -4,6 +4,7 @@ from build.queries import (
     build_online_history_query,
     build_any_channel_history_query,
     build_revenue_query,
+    build_offline_revenue_query,
     build_ops_metrics_query,
 )
 
@@ -53,6 +54,27 @@ def test_revenue_query_uses_ist_date_bounds():
     sql = build_revenue_query(STORES, START, END)
     assert "toDate('2026-05-23', 'Asia/Kolkata')" in sql
     assert "toDate('2026-08-21', 'Asia/Kolkata')" in sql
+
+
+def test_offline_revenue_query_scopes_to_pos_channel():
+    sql = build_offline_revenue_query(STORES, START, END)
+    assert f"brand_id = {BRAND_ID}" in sql
+    assert "channel = 'pos'" in sql
+    assert "'PNQ KK Ravet'" in sql
+
+
+def test_offline_revenue_query_does_not_filter_cancellations():
+    # Dine-in has no comparable order-state pipeline in this data —
+    # same as the Pune/NCR precedent's dine-in revenue query.
+    sql = build_offline_revenue_query(STORES, START, END)
+    assert "orders_state_transitions" not in sql
+
+
+def test_offline_revenue_query_uses_ist_date_bounds_and_selects_order_count():
+    sql = build_offline_revenue_query(STORES, START, END)
+    assert "toDate('2026-05-23', 'Asia/Kolkata')" in sql
+    assert "toDate('2026-08-21', 'Asia/Kolkata')" in sql
+    assert "order_count" in sql
 
 
 def test_ops_metrics_query_scoped_to_swiggy_zomato_and_kpt_p80():

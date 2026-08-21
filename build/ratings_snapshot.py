@@ -47,8 +47,14 @@ RATINGS_BY_DISPLAY_NAME = {
     "CP 67 Mall": {"swiggy": _r(4.3, 21), "zomato": _r(4.2, 71)},
 }
 
+# No Google storefront ratings data has been provided yet — every store
+# shows as not-yet-rated for Google until a snapshot is pasted here,
+# same shape as RATINGS_BY_DISPLAY_NAME's swiggy/zomato entries.
+GOOGLE_BY_DISPLAY_NAME = {}
+
 _EMPTY_RATING = {"swiggy": _r(None, None), "zomato": _r(None, None)}
 
 
 def ratings_for(display_name):
-    return RATINGS_BY_DISPLAY_NAME.get(display_name, _EMPTY_RATING)
+    base = RATINGS_BY_DISPLAY_NAME.get(display_name, _EMPTY_RATING)
+    return {**base, "google": GOOGLE_BY_DISPLAY_NAME.get(display_name, _r(None, None))}

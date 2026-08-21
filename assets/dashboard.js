@@ -492,7 +492,7 @@ function renderDateRangeRow(availableDates, range, onChange) {
     { label: '7 Days', days: 7 },
     { label: '30 Days', days: 30 },
     { label: 'MTD', mtd: true },
-    { label: 'Whole Window', all: true },
+    { label: '90 Days', all: true },
   ];
   for (const p of presetDefs) {
     const btn = document.createElement('button');
@@ -573,12 +573,14 @@ function renderSortableTable(tableId, columns, rows, sortState) {
 // ---------- Table 1: revenue / orders detail ----------
 
 function sumDailyInRange(daily, start, end) {
-  let revenue = 0, orders = 0, days = 0;
+  let onlineRevenue = 0, offlineRevenue = 0, onlineOrders = 0, offlineOrders = 0, days = 0;
   let swiggyRevenue = 0, zomatoRevenue = 0, swiggyOrders = 0, zomatoOrders = 0;
   for (const d of daily) {
     if (d.date >= start && d.date <= end) {
-      revenue += d.total;
-      orders += d.online_orders;
+      onlineRevenue += Object.values(d.online).reduce((a, b) => a + b, 0);
+      offlineRevenue += d.dine_in;
+      onlineOrders += d.online_orders;
+      offlineOrders += d.dine_in_orders;
       swiggyRevenue += d.online.swiggy;
       zomatoRevenue += d.online.zomato;
       swiggyOrders += d.orders_by_channel.swiggy;
@@ -586,7 +588,7 @@ function sumDailyInRange(daily, start, end) {
       days++;
     }
   }
-  return { revenue, orders, swiggyRevenue, zomatoRevenue, swiggyOrders, zomatoOrders, days };
+  return { onlineRevenue, offlineRevenue, onlineOrders, offlineOrders, swiggyRevenue, zomatoRevenue, swiggyOrders, zomatoOrders, days };
 }
 
 function fmtThousands(n) {
@@ -601,12 +603,14 @@ function buildDetailRow(s, range) {
     store: s.display_name,
     launchDate: s.launch_date,
     daysSinceLaunch: s.days_since_launch,
-    revPerDay: perDay(sums.revenue),
-    opd: perDay(sums.orders),
+    opd: perDay(sums.onlineOrders + sums.offlineOrders),
+    revPerDay: perDay(sums.onlineRevenue + sums.offlineRevenue),
+    offOpd: perDay(sums.offlineOrders),
+    offRevPerDay: perDay(sums.offlineRevenue),
+    onOpd: perDay(sums.onlineOrders),
+    onRevPerDay: perDay(sums.onlineRevenue),
     swiggyOpd: perDay(sums.swiggyOrders),
     zomatoOpd: perDay(sums.zomatoOrders),
-    swiggyRevPerDay: perDay(sums.swiggyRevenue),
-    zomatoRevPerDay: perDay(sums.zomatoRevenue),
   };
 }
 
@@ -627,10 +631,12 @@ const DETAIL_COLUMNS = [
   { label: 'Days Live', value: r => r.daysSinceLaunch, numeric: true, display: r => String(r.daysSinceLaunch) },
   { label: 'OPD', value: r => r.opd, numeric: true, render: (cell, r) => opdCell(cell, r.opd) },
   { label: 'Rev/day (k)', value: r => r.revPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revPerDay) },
+  { label: 'Off-OPD', value: r => r.offOpd, numeric: true, render: (cell, r) => opdCell(cell, r.offOpd) },
+  { label: 'Off-Rev/day (k)', value: r => r.offRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.offRevPerDay) },
+  { label: 'On-OPD', value: r => r.onOpd, numeric: true, render: (cell, r) => opdCell(cell, r.onOpd) },
+  { label: 'On-Rev/day (k)', value: r => r.onRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.onRevPerDay) },
   { label: 'S-OPD', value: r => r.swiggyOpd, numeric: true, render: (cell, r) => opdCell(cell, r.swiggyOpd) },
   { label: 'Z-OPD', value: r => r.zomatoOpd, numeric: true, render: (cell, r) => opdCell(cell, r.zomatoOpd) },
-  { label: 'S-Rev/day (k)', value: r => r.swiggyRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.swiggyRevPerDay) },
-  { label: 'Z-Rev/day (k)', value: r => r.zomatoRevPerDay, numeric: true, render: (cell, r) => revPerDayCell(cell, r.zomatoRevPerDay) },
 ];
 
 const detailSortState = { col: 3, dir: 1 };
@@ -667,6 +673,7 @@ function buildHealthRow(s, range) {
     kptP80Minutes: computed.kptP80Minutes,
     swiggyRating: s.ratings.swiggy,
     zomatoRating: s.ratings.zomato,
+    googleRating: s.ratings.google,
   };
 }
 
@@ -689,6 +696,10 @@ const HEALTH_COLUMNS = [
   {
     label: 'Zomato Storefront', value: r => r.zomatoRating.rating, numeric: true,
     render: (cell, r) => ratingChipCell(cell, r.zomatoRating),
+  },
+  {
+    label: 'Google Storefront', value: r => r.googleRating.rating, numeric: true,
+    render: (cell, r) => ratingChipCell(cell, r.googleRating),
   },
 ];
 

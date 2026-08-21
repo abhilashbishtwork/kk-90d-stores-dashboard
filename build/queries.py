@@ -75,6 +75,28 @@ def build_revenue_query(store_names, start_date, end_date):
     """.strip()
 
 
+def build_offline_revenue_query(store_names, start_date, end_date):
+    """Dine-in/POS revenue — same validated formula as online, no
+    cancellation-state exclusion (no comparable order-state pipeline
+    for this channel in this data, matching the Pune/NCR precedent)."""
+    stores_sql = _store_list_sql(store_names)
+    return f"""
+        SELECT
+            toDate(created_at_ist) AS order_date,
+            store_name AS store_name,
+            sum(sub_total_amount - (discount - aggregator_discount) + charges) AS revenue,
+            count(*) AS order_count
+        FROM orders
+        WHERE brand_id = {BRAND_ID}
+          AND store_name IN ({stores_sql})
+          AND channel = 'pos'
+          AND toDate(created_at_ist) >= toDate('{start_date}', 'Asia/Kolkata')
+          AND toDate(created_at_ist) <= toDate('{end_date}', 'Asia/Kolkata')
+        GROUP BY order_date, store_name
+        FORMAT TabSeparatedWithNames
+    """.strip()
+
+
 def build_ops_metrics_query(store_names, start_date, end_date):
     """Cancellation % and KPT (P80 Acknowledged -> Food Ready), same
     validated approach as the Pune/NCR dashboards. Scoped to

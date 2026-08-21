@@ -4,12 +4,14 @@ from datetime import date
 from build.build_data import run, read_previous_store_count
 
 
-def _fake_runner(online_history_rows, revenue_rows, ops_rows, any_channel_history_rows=None):
+def _fake_runner(online_history_rows, revenue_rows, ops_rows, any_channel_history_rows=None, offline_revenue_rows=None):
     def runner(sql):
         if "transitions_pivoted" in sql:
             return ops_rows
         if "orders_state_transitions" in sql:
             return revenue_rows
+        if "channel = 'pos'" in sql:
+            return offline_revenue_rows if offline_revenue_rows is not None else []
         if "channel IN" in sql:
             return online_history_rows
         return any_channel_history_rows if any_channel_history_rows is not None else []
@@ -113,6 +115,28 @@ def test_run_excludes_a_manually_overridden_offline_only_duplicate(tmp_path, mon
     names = [s["store_name"] for s in json.loads(fake_path.read_text())["stores"]]
     assert "PNQ KK FB Baner Pos" not in names
     assert "PNQ KK Baner" in names
+
+
+def test_run_rolls_up_the_alias_overridden_stores_pos_revenue_into_the_target(tmp_path, monkeypatch):
+    fake_path = tmp_path / "data.json"
+    monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+
+    online_history_rows = [
+        {"store_name": "PNQ KK Baner", "first_seen": "2026-07-02", "last_seen": "2026-08-20"},
+    ]
+    any_channel_history_rows = online_history_rows + [
+        {"store_name": "PNQ KK FB Baner Pos", "first_seen": "2026-07-25", "last_seen": "2026-08-20"},
+    ]
+    offline_revenue_rows = [
+        {"order_date": "2026-08-17", "store_name": "PNQ KK FB Baner Pos", "revenue": "500", "order_count": "4"},
+    ]
+    runner = _fake_runner(online_history_rows, [], [], any_channel_history_rows, offline_revenue_rows)
+
+    result = run(runner, date(2026, 8, 18), previous_store_count=None)
+
+    assert result is True
+    baner = next(s for s in json.loads(fake_path.read_text())["stores"] if s["store_name"] == "PNQ KK Baner")
+    assert baner["revenue"]["lifetime"]["dine_in"] == 500.0
 
 
 def test_run_excludes_a_store_gone_silent_for_weeks(tmp_path, monkeypatch):

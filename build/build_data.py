@@ -14,10 +14,11 @@ from build.queries import (
     build_online_history_query,
     build_any_channel_history_query,
     build_revenue_query,
+    build_offline_revenue_query,
     build_ops_metrics_query,
 )
 from build.rename_guard import resolve_new_stores, filter_unknown_places
-from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES
+from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES, MANUAL_ALIAS_OVERRIDES
 from build.clickhouse_client import run_query
 from build.aggregate import build_dashboard_payload
 from build.sanity_guard import is_pull_valid
@@ -67,8 +68,17 @@ def run(query_runner, today, previous_store_count):
     # rename chains the same way (the same rename pattern occurs on the
     # POS side, just not simultaneously with the online side).
     any_channel_history_rows = query_runner(build_any_channel_history_query())
-    offline_only_history = filter_unknown_places(any_channel_history_rows, online_store_names)
+    # Names aliased to an already-tracked store (see MANUAL_ALIAS_OVERRIDES)
+    # must not also resolve as their own new offline-only entry.
+    known_names = online_store_names | set(MANUAL_ALIAS_OVERRIDES)
+    offline_only_history = filter_unknown_places(any_channel_history_rows, known_names)
     roster += resolve_new_stores(offline_only_history, str(window_start), manual_excludes=MANUAL_EXCLUDE_STORE_NAMES)
+
+    roster_by_name = {s["store_name"]: s for s in roster}
+    for alias_name, target_name in MANUAL_ALIAS_OVERRIDES.items():
+        target = roster_by_name.get(target_name)
+        if target is not None:
+            target["aliases"].append(alias_name)
 
     last_seen_by_name = {r["store_name"]: r["last_seen"] for r in history_rows}
     last_seen_by_name.update({r["store_name"]: r["last_seen"] for r in any_channel_history_rows})
@@ -80,9 +90,10 @@ def run(query_runner, today, previous_store_count):
 
     all_aliases = [alias for store in roster for alias in store["aliases"]]
     revenue_rows = query_runner(build_revenue_query(all_aliases, window_start, today)) if all_aliases else []
+    offline_revenue_rows = query_runner(build_offline_revenue_query(all_aliases, window_start, today)) if all_aliases else []
     ops_rows = query_runner(build_ops_metrics_query(all_aliases, window_start, today)) if all_aliases else []
 
-    payload = build_dashboard_payload(roster, revenue_rows, ops_rows, today)
+    payload = build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, today)
     payload["generated_at_ist"] = datetime.now(IST).isoformat()
     payload["window_days"] = WINDOW_DAYS
 
