@@ -31,4 +31,19 @@ MANUAL_ALIAS_OVERRIDES = {
     # outside both its exact-match and ratio-with-minimum-token-count
     # rules — a real, accepted blind spot, not a bug to chase further.
     "PNQ KK FB Baner Pos": "PNQ KK Baner",
+
+    # These three stores relocated to a new/bigger location and kept
+    # ordering online through their pre-move aggregator listing (RID) —
+    # confirmed directly by the user (2026-08-21), ops-side info
+    # ClickHouse's order history can't reveal on its own (no gap or
+    # volume step-change at the relocation date, since the account
+    # never stopped taking orders). Each of these predecessor names
+    # would otherwise resolve as its own old, excluded store (true
+    # launch well before the 90-day window) — aliasing them here rolls
+    # their ongoing online orders into the relocated store's entry
+    # instead, while that entry keeps its own (later, POS-detected)
+    # launch_date as the relocation date, not the original RID's.
+    "BLR KK Manyata Online": "BLR KK Manyata Tech Park G Block POS",
+    "IXC KK Mohali Phase 9 - Kripsy Kreme - NCR": "IXC KK Mohali Walk Pos",
+    "JAI KK Vaishali Nagar Online": "JAI KK Mall of Jaipur Pos",
 }
