@@ -7,6 +7,7 @@ from build.queries import (
     build_offline_revenue_query,
     build_ops_metrics_query,
     build_cancellation_detail_query,
+    build_discount_detail_query,
 )
 
 STORES = ["PNQ KK Ravet", "BLR KK SB Sarjapura - Krispy Kreme", "BLR KK SB Sarjapura"]
@@ -100,5 +101,37 @@ def test_cancellation_detail_query_selects_reason_fields():
 
 def test_cancellation_detail_query_uses_ist_date_bounds():
     sql = build_cancellation_detail_query(STORES, START, END)
+    assert "toDate('2026-05-23', 'Asia/Kolkata')" in sql
+    assert "toDate('2026-08-21', 'Asia/Kolkata')" in sql
+
+
+def test_discount_detail_query_includes_brand_and_stores():
+    sql = build_discount_detail_query(STORES, START, END)
+    assert f"brand_id = {BRAND_ID}" in sql
+    assert "'PNQ KK Ravet'" in sql
+
+
+def test_discount_detail_query_selects_discount_fields():
+    sql = build_discount_detail_query(STORES, START, END)
+    assert "sub_total_amount" in sql
+    assert "aggregator_discount" in sql
+    assert "merchant_discount" in sql
+
+
+def test_discount_detail_query_excludes_cancelled_via_state_transitions():
+    # Same base as the revenue query, so discount rate is comparable to
+    # reported revenue — a cancelled order isn't real promotional spend.
+    sql = build_discount_detail_query(STORES, START, END)
+    assert "orders_state_transitions" in sql
+    assert "'Cancelled', 'customer_cancelled'" in sql
+
+
+def test_discount_detail_query_filters_online_channels_only():
+    sql = build_discount_detail_query(STORES, START, END)
+    assert "channel IN ('swiggy', 'zomato', 'ownly')" in sql
+
+
+def test_discount_detail_query_uses_ist_date_bounds():
+    sql = build_discount_detail_query(STORES, START, END)
     assert "toDate('2026-05-23', 'Asia/Kolkata')" in sql
     assert "toDate('2026-08-21', 'Asia/Kolkata')" in sql

@@ -5,12 +5,14 @@ from build.build_data import run, read_previous_store_count
 
 
 def _fake_runner(online_history_rows, revenue_rows, ops_rows, any_channel_history_rows=None,
-                  offline_revenue_rows=None, cancellation_rows=None):
+                  offline_revenue_rows=None, cancellation_rows=None, discount_rows=None):
     def runner(sql):
         if "cancellation_transitions_pivoted" in sql:
             return cancellation_rows if cancellation_rows is not None else []
         if "transitions_pivoted" in sql:
             return ops_rows
+        if "gross_sales" in sql:
+            return discount_rows if discount_rows is not None else []
         if "orders_state_transitions" in sql:
             return revenue_rows
         if "channel = 'pos'" in sql:
@@ -244,6 +246,30 @@ def test_run_wires_cancellation_detail_rows_into_the_payload(tmp_path, monkeypat
     assert ravet["cancellations"]["daily"] == [{
         "date": "2026-08-17", "channel": "swiggy", "cancelled_by": "merchant",
         "reason": "Store busy", "count": 2,
+    }]
+
+
+def test_run_wires_discount_detail_rows_into_the_payload(tmp_path, monkeypatch):
+    fake_path = tmp_path / "data.json"
+    monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+    monkeypatch.setattr("build.build_data.MANUAL_ADDITIONAL_STORES", [])
+
+    online_history_rows = [
+        {"store_name": "PNQ KK Ravet", "first_seen": "2026-07-17", "last_seen": "2026-08-20"},
+    ]
+    discount_rows = [
+        {"order_date": "2026-08-17", "store_name": "PNQ KK Ravet", "channel": "swiggy",
+         "gross_sales": "10000", "discount": "2000", "aggregator_discount": "200", "merchant_discount": "1800", "order_count": "40"},
+    ]
+    runner = _fake_runner(online_history_rows, [], [], discount_rows=discount_rows)
+
+    result = run(runner, date(2026, 8, 18), previous_store_count=None)
+
+    assert result is True
+    ravet = json.loads(fake_path.read_text())["stores"][0]
+    assert ravet["discounts"]["daily"] == [{
+        "date": "2026-08-17", "channel": "swiggy", "gross_sales": 10000.0,
+        "discount": 2000.0, "aggregator_discount": 200.0, "merchant_discount": 1800.0, "orders": 40,
     }]
 
 

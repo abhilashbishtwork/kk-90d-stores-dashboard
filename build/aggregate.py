@@ -47,7 +47,7 @@ def _empty_date_entry():
     }
 
 
-def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, cancellation_rows, today_ist):
+def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, cancellation_rows, discount_rows, today_ist):
     today_str = str(today_ist)
     alias_to_canonical = {alias: s["store_name"] for s in roster for alias in s["aliases"]}
 
@@ -97,6 +97,21 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
             "cancelled_by": r["cancelled_by"] or "unknown",
             "reason": reason,
             "count": int(r["cancelled_orders"]),
+        })
+
+    by_store_discounts = {}
+    for r in discount_rows:
+        canonical = alias_to_canonical.get(r["store_name"])
+        if canonical is None:
+            continue
+        by_store_discounts.setdefault(canonical, []).append({
+            "date": r["order_date"],
+            "channel": r["channel"],
+            "gross_sales": float(r["gross_sales"]),
+            "discount": float(r["discount"]),
+            "aggregator_discount": float(r["aggregator_discount"]),
+            "merchant_discount": float(r["merchant_discount"]),
+            "orders": int(r["order_count"]),
         })
 
     complete_dates = sorted({d for (_, d) in by_store_date if d != today_str})
@@ -155,6 +170,12 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
             "cancellations": {
                 "daily": sorted(
                     (d for d in by_store_cancellations.get(store_name, []) if d["date"] != today_str),
+                    key=lambda d: d["date"],
+                ),
+            },
+            "discounts": {
+                "daily": sorted(
+                    (d for d in by_store_discounts.get(store_name, []) if d["date"] != today_str),
                     key=lambda d: d["date"],
                 ),
             },

@@ -89,6 +89,7 @@ function metricChipClass(value, kind) {
   if (kind === 'minOrdersPerDay') return value >= GOOD.ordersPerDay ? 'good' : 'na';
   if (kind === 'maxKpt') return value <= GOOD.kptP80Minutes ? 'good' : value <= 15 ? 'warn' : 'crit';
   if (kind === 'rating') return value >= GOOD.rating ? 'good' : value >= GOOD.ratingMin ? 'warn' : 'crit';
+  if (kind === 'maxDiscountRate') return value <= 15 ? 'good' : value <= 25 ? 'warn' : 'crit';
   return 'na';
 }
 
@@ -892,6 +893,88 @@ function renderCancellationSection(stores, range) {
   renderCancellationTable(buildReasonRows(rows));
 }
 
+// ---------- Discounts — merchant vs aggregator funded ----------
+
+function discountsInRange(daily, range) {
+  return daily.filter(d => d.date >= range.start && d.date <= range.end);
+}
+
+function sumDiscountRows(rows) {
+  return rows.reduce((acc, r) => {
+    acc.gross += r.gross_sales;
+    acc.discount += r.discount;
+    acc.merchant += r.merchant_discount;
+    acc.aggregator += r.aggregator_discount;
+    return acc;
+  }, { gross: 0, discount: 0, merchant: 0, aggregator: 0 });
+}
+
+function renderDiscountSummary(stores, range) {
+  const el = document.getElementById('discount-summary');
+  el.innerHTML = '';
+  const allRows = stores.flatMap(s => discountsInRange(s.discounts.daily, range));
+  const { gross, discount, merchant, aggregator } = sumDiscountRows(allRows);
+
+  const c1 = kpiCard();
+  addKpiText(c1, 'label', 'Total Discount');
+  addKpiText(c1, 'value', fmtMoneyCompact(discount));
+  el.appendChild(c1);
+
+  const c2 = kpiCard();
+  addKpiText(c2, 'label', 'Discount Rate');
+  addKpiText(c2, 'value', gross > 0 ? `${((discount / gross) * 100).toFixed(1)}%` : '—');
+  addKpiText(c2, 'sub', `on ${fmtMoneyCompact(gross)} gross sales`);
+  el.appendChild(c2);
+
+  const c3 = kpiCard();
+  addKpiText(c3, 'label', 'Merchant-Funded');
+  addKpiText(c3, 'value', fmtMoneyCompact(merchant));
+  addKpiText(c3, 'sub', discount > 0 ? `${((merchant / discount) * 100).toFixed(0)}% of discount` : '');
+  el.appendChild(c3);
+
+  const c4 = kpiCard();
+  addKpiText(c4, 'label', 'Aggregator-Funded');
+  addKpiText(c4, 'value', fmtMoneyCompact(aggregator));
+  addKpiText(c4, 'sub', discount > 0 ? `${((aggregator / discount) * 100).toFixed(0)}% of discount` : '');
+  el.appendChild(c4);
+}
+
+function buildDiscountRow(s, range) {
+  const { gross, discount, merchant, aggregator } = sumDiscountRows(discountsInRange(s.discounts.daily, range));
+  return {
+    city: s.city,
+    store: s.display_name,
+    discountRatePct: gross > 0 ? (discount / gross) * 100 : null,
+    totalDiscount: discount,
+    merchantDiscount: merchant,
+    aggregatorDiscount: aggregator,
+  };
+}
+
+const DISCOUNT_COLUMNS = [
+  { label: 'City', value: r => r.city, display: r => r.city },
+  { label: 'Store', value: r => r.store, display: r => r.store, storeCell: true },
+  {
+    label: 'Discount Rate', value: r => r.discountRatePct, numeric: true,
+    render: (cell, r) => cell.appendChild(metricChip(r.discountRatePct !== null ? r.discountRatePct.toFixed(1) : null, 'maxDiscountRate', r.discountRatePct !== null ? '%' : '')),
+  },
+  { label: 'Total Discount', value: r => r.totalDiscount, numeric: true, display: r => fmtMoneyCompact(r.totalDiscount) },
+  { label: 'Merchant-Funded', value: r => r.merchantDiscount, numeric: true, display: r => fmtMoneyCompact(r.merchantDiscount) },
+  { label: 'Aggregator-Funded', value: r => r.aggregatorDiscount, numeric: true, display: r => fmtMoneyCompact(r.aggregatorDiscount) },
+];
+
+const discountSortState = { col: 2, dir: -1 };
+
+function renderDiscountTable(stores, range) {
+  const rows = stores.map(s => buildDiscountRow(s, range));
+  renderSortableTable('discount-table', DISCOUNT_COLUMNS, rows, discountSortState);
+}
+
+function renderDiscountSection(stores, range) {
+  renderDiscountSummary(stores, range);
+  renderDiscountTable(stores, range);
+}
+
 // ---------- boot ----------
 
 async function loadData() {
@@ -927,6 +1010,7 @@ function renderAll({ dashboard }) {
     renderDetailTable(filtered, currentRange);
     renderHealthTable(filtered, currentRange);
     renderCancellationSection(filtered, currentRange);
+    renderDiscountSection(filtered, currentRange);
   };
 
   const handleCityChange = (city) => {

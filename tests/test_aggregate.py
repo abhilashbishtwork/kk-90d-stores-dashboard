@@ -18,7 +18,7 @@ def test_revenue_rolls_up_across_channels_and_aliases():
         {"order_date": "2026-07-06", "store_name": "BLR KK SB Sarjapura", "channel": "swiggy", "revenue": "1000", "order_count": "10"},
         {"order_date": "2026-07-06", "store_name": "BLR KK SB Sarjapura", "channel": "zomato", "revenue": "500", "order_count": "5"},
     ]
-    payload = build_dashboard_payload(roster, revenue_rows, [], [], [], date(2026, 7, 7))
+    payload = build_dashboard_payload(roster, revenue_rows, [], [], [], [], date(2026, 7, 7))
     store = payload["stores"][0]
     assert len(store["revenue"]["daily"]) == 2
     day0, day1 = store["revenue"]["daily"]
@@ -40,7 +40,7 @@ def test_offline_revenue_rolls_up_into_dine_in_and_combined_total():
     revenue_rows = [
         {"order_date": "2026-07-05", "store_name": "BLR KK SB Sarjapura", "channel": "swiggy", "revenue": "300", "order_count": "2"},
     ]
-    payload = build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, [], [], date(2026, 7, 6))
+    payload = build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, [], [], [], date(2026, 7, 6))
     day = payload["stores"][0]["revenue"]["daily"][0]
     assert day["dine_in"] == 200.0
     assert day["dine_in_orders"] == 3
@@ -55,7 +55,7 @@ def test_offline_only_date_still_produces_a_daily_entry():
         {"order_date": "2026-08-20", "store_name": "PNQ KK Elpro Mall", "revenue": "150", "order_count": "1"},
     ]
     roster = [{"store_name": "PNQ KK Elpro Mall", "launch_date": "2026-08-20", "aliases": ["PNQ KK Elpro Mall"]}]
-    payload = build_dashboard_payload(roster, [], offline_revenue_rows, [], [], date(2026, 8, 21))
+    payload = build_dashboard_payload(roster, [], offline_revenue_rows, [], [], [], date(2026, 8, 21))
     daily = payload["stores"][0]["revenue"]["daily"]
     assert len(daily) == 1
     assert daily[0]["date"] == "2026-08-20"
@@ -69,7 +69,7 @@ def test_offline_revenue_excluded_for_today_same_as_online():
         {"order_date": "2026-08-21", "store_name": "PNQ KK Elpro Mall", "revenue": "150", "order_count": "1"},
     ]
     roster = [{"store_name": "PNQ KK Elpro Mall", "launch_date": "2026-08-20", "aliases": ["PNQ KK Elpro Mall"]}]
-    payload = build_dashboard_payload(roster, [], offline_revenue_rows, [], [], date(2026, 8, 21))
+    payload = build_dashboard_payload(roster, [], offline_revenue_rows, [], [], [], date(2026, 8, 21))
     assert payload["stores"][0]["revenue"]["daily"] == []
 
 
@@ -77,13 +77,13 @@ def test_today_excluded_full_day_rule():
     revenue_rows = [
         {"order_date": "2026-06-01", "store_name": "DEL KK GK1 Online", "channel": "swiggy", "revenue": "999", "order_count": "3"},
     ]
-    payload = build_dashboard_payload(GK1_ROSTER, revenue_rows, [], [], [], date(2026, 6, 1))
+    payload = build_dashboard_payload(GK1_ROSTER, revenue_rows, [], [], [], [], date(2026, 6, 1))
     store = payload["stores"][0]
     assert store["revenue"]["daily"] == []
 
 
 def test_store_with_no_revenue_rows_has_empty_daily_and_zero_totals():
-    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], date(2026, 7, 20))
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], [], date(2026, 7, 20))
     store = payload["stores"][0]
     assert store["revenue"]["daily"] == []
     zero = {"online": 0.0, "total": 0.0, "online_orders": 0, "dine_in": 0.0, "dine_in_orders": 0}
@@ -98,7 +98,7 @@ def test_mtd_only_sums_current_month():
         {"order_date": "2026-06-01", "store_name": "DEL KK GK1 Online", "channel": "swiggy", "revenue": "5000", "order_count": "20"},
         {"order_date": "2026-07-01", "store_name": "DEL KK GK1 Online", "channel": "swiggy", "revenue": "300", "order_count": "2"},
     ]
-    payload = build_dashboard_payload(GK1_ROSTER, revenue_rows, [], [], [], date(2026, 7, 2))
+    payload = build_dashboard_payload(GK1_ROSTER, revenue_rows, [], [], [], [], date(2026, 7, 2))
     store = payload["stores"][0]
     assert store["revenue"]["mtd"]["total"] == 300.0
     assert store["revenue"]["mtd"]["online_orders"] == 2
@@ -109,7 +109,7 @@ def test_lifetime_sums_all_daily_entries_since_launch():
         {"order_date": "2026-06-01", "store_name": "DEL KK GK1 Online", "channel": "swiggy", "revenue": "5000", "order_count": "20"},
         {"order_date": "2026-07-01", "store_name": "DEL KK GK1 Online", "channel": "swiggy", "revenue": "300", "order_count": "2"},
     ]
-    payload = build_dashboard_payload(GK1_ROSTER, revenue_rows, [], [], [], date(2026, 7, 2))
+    payload = build_dashboard_payload(GK1_ROSTER, revenue_rows, [], [], [], [], date(2026, 7, 2))
     store = payload["stores"][0]
     assert store["revenue"]["lifetime"]["total"] == 5300.0
     assert store["revenue"]["lifetime"]["online_orders"] == 22
@@ -117,12 +117,12 @@ def test_lifetime_sums_all_daily_entries_since_launch():
 
 def test_all_roster_stores_present():
     roster = RAVET_ROSTER + GK1_ROSTER
-    payload = build_dashboard_payload(roster, [], [], [], [], date(2026, 8, 18))
+    payload = build_dashboard_payload(roster, [], [], [], [], [], date(2026, 8, 18))
     assert len(payload["stores"]) == 2
 
 
 def test_city_display_name_and_days_since_launch_computed():
-    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], date(2026, 8, 18))
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], [], date(2026, 8, 18))
     store = payload["stores"][0]
     assert store["city"] == "Pune"
     assert store["display_name"] == "Ravet"
@@ -136,7 +136,7 @@ def test_stores_sorted_by_city_then_most_recently_launched_first():
         {"store_name": "PNQ KK Ravet", "launch_date": "2026-07-17", "aliases": ["PNQ KK Ravet"]},
         {"store_name": "BLR KK SB Sarjapura", "launch_date": "2026-07-05", "aliases": ["BLR KK SB Sarjapura"]},
     ]
-    payload = build_dashboard_payload(roster, [], [], [], [], date(2026, 8, 18))
+    payload = build_dashboard_payload(roster, [], [], [], [], [], date(2026, 8, 18))
     names = [s["store_name"] for s in payload["stores"]]
     assert names == ["BLR KK SB Sarjapura", "PNQ KK Ravet", "PNQ KK Kothrud"]
 
@@ -153,7 +153,7 @@ def test_ops_computed_cancellation_and_kpt_rolls_up_across_aliases():
         {"order_date": "2026-07-06", "store_name": "BLR KK SB Sarjapura", "channel": "swiggy",
          "total_orders": "10", "cancelled_orders": "1", "kpt_p80_minutes": "4.1"},
     ]
-    payload = build_dashboard_payload(roster, [], [], ops_rows, [], date(2026, 7, 7))
+    payload = build_dashboard_payload(roster, [], [], ops_rows, [], [], date(2026, 7, 7))
     ops_daily = payload["stores"][0]["ops_computed"]["daily"]
     assert len(ops_daily) == 2
     assert ops_daily[0]["date"] == "2026-07-05"
@@ -164,7 +164,7 @@ def test_ops_computed_cancellation_and_kpt_rolls_up_across_aliases():
 
 def test_ratings_attached_for_a_known_display_name():
     roster = [{"store_name": "PNQ KK Tribeca", "launch_date": "2026-06-27", "aliases": ["PNQ KK Tribeca"]}]
-    payload = build_dashboard_payload(roster, [], [], [], [], date(2026, 8, 18))
+    payload = build_dashboard_payload(roster, [], [], [], [], [], date(2026, 8, 18))
     ratings = payload["stores"][0]["ratings"]
     assert ratings["swiggy"]["rating"] == 4.6
     assert ratings["zomato"]["rating"] == 4.3
@@ -174,7 +174,7 @@ def test_ratings_attached_for_a_known_display_name():
 
 def test_ratings_missing_for_an_unmatched_store_are_null():
     roster = [{"store_name": "DEL KK Brand New Store", "launch_date": "2026-08-18", "aliases": ["DEL KK Brand New Store"]}]
-    payload = build_dashboard_payload(roster, [], [], [], [], date(2026, 8, 18))
+    payload = build_dashboard_payload(roster, [], [], [], [], [], date(2026, 8, 18))
     ratings = payload["stores"][0]["ratings"]
     assert ratings["swiggy"]["rating"] is None
     assert ratings["zomato"]["rating"] is None
@@ -191,7 +191,7 @@ def test_revenue_before_launch_date_is_excluded_from_daily():
         {"order_date": "2026-06-01", "store_name": "BLR KK Mantri Online", "channel": "swiggy", "revenue": "9999", "order_count": "50"},
         {"order_date": "2026-08-14", "store_name": "BLR KK Mantri Online", "channel": "swiggy", "revenue": "500", "order_count": "3"},
     ]
-    payload = build_dashboard_payload(roster, revenue_rows, [], [], [], date(2026, 8, 15))
+    payload = build_dashboard_payload(roster, revenue_rows, [], [], [], [], date(2026, 8, 15))
     daily = payload["stores"][0]["revenue"]["daily"]
     assert len(daily) == 1
     assert daily[0]["date"] == "2026-08-14"
@@ -203,7 +203,7 @@ def test_ops_computed_missing_kpt_gives_null():
         {"order_date": "2026-07-17", "store_name": "PNQ KK Ravet", "channel": "zomato",
          "total_orders": "0", "cancelled_orders": "0", "kpt_p80_minutes": "\\N"},
     ]
-    payload = build_dashboard_payload(RAVET_ROSTER, [], [], ops_rows, [], date(2026, 7, 20))
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], ops_rows, [], [], date(2026, 7, 20))
     ops_daily = payload["stores"][0]["ops_computed"]["daily"]
     assert ops_daily[0]["kpt_p80_minutes"] is None
 
@@ -214,7 +214,7 @@ def test_cancellations_rolled_up_with_normalized_reason():
          "cancelled_by": "aggregator", "cancelled_reason": "x",
          "cancellation_message": "reject-Order rejected due to 'Items out of stock'", "cancelled_orders": "3"},
     ]
-    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], cancellation_rows, date(2026, 7, 20))
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], cancellation_rows, [], date(2026, 7, 20))
     daily = payload["stores"][0]["cancellations"]["daily"]
     assert daily == [{
         "date": "2026-07-17", "channel": "swiggy", "cancelled_by": "aggregator",
@@ -232,7 +232,7 @@ def test_cancellations_rolls_up_across_aliases():
         {"order_date": "2026-07-05", "store_name": "BLR KK SB Sarjapura - Krispy Kreme", "channel": "swiggy",
          "cancelled_by": "merchant", "cancelled_reason": "store_closed", "cancellation_message": "", "cancelled_orders": "1"},
     ]
-    payload = build_dashboard_payload(roster, [], [], [], cancellation_rows, date(2026, 7, 6))
+    payload = build_dashboard_payload(roster, [], [], [], cancellation_rows, [], date(2026, 7, 6))
     daily = payload["stores"][0]["cancellations"]["daily"]
     assert len(daily) == 1
     assert daily[0]["reason"] == "Store closed"
@@ -243,10 +243,54 @@ def test_cancellations_excluded_for_today_and_missing_by_default():
         {"order_date": "2026-07-20", "store_name": "PNQ KK Ravet", "channel": "swiggy",
          "cancelled_by": "customer", "cancelled_reason": "", "cancellation_message": "", "cancelled_orders": "1"},
     ]
-    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], cancellation_rows, date(2026, 7, 20))
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], cancellation_rows, [], date(2026, 7, 20))
     assert payload["stores"][0]["cancellations"]["daily"] == []
 
 
 def test_store_with_no_cancellation_rows_has_empty_cancellations():
-    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], date(2026, 8, 18))
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], [], date(2026, 8, 18))
     assert payload["stores"][0]["cancellations"]["daily"] == []
+
+
+def test_discounts_rolled_up_per_day():
+    discount_rows = [
+        {"order_date": "2026-07-17", "store_name": "PNQ KK Ravet", "channel": "swiggy",
+         "gross_sales": "10000", "discount": "2000", "aggregator_discount": "200", "merchant_discount": "1800", "order_count": "40"},
+    ]
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], discount_rows, date(2026, 7, 20))
+    daily = payload["stores"][0]["discounts"]["daily"]
+    assert daily == [{
+        "date": "2026-07-17", "channel": "swiggy", "gross_sales": 10000.0,
+        "discount": 2000.0, "aggregator_discount": 200.0, "merchant_discount": 1800.0, "orders": 40,
+    }]
+
+
+def test_discounts_roll_up_across_aliases_and_channels():
+    roster = [{
+        "store_name": "BLR KK SB Sarjapura",
+        "launch_date": "2026-07-05",
+        "aliases": ["BLR KK SB Sarjapura - Krispy Kreme", "BLR KK SB Sarjapura"],
+    }]
+    discount_rows = [
+        {"order_date": "2026-07-06", "store_name": "BLR KK SB Sarjapura", "channel": "swiggy",
+         "gross_sales": "5000", "discount": "1000", "aggregator_discount": "0", "merchant_discount": "1000", "order_count": "20"},
+        {"order_date": "2026-07-06", "store_name": "BLR KK SB Sarjapura", "channel": "zomato",
+         "gross_sales": "3000", "discount": "600", "aggregator_discount": "100", "merchant_discount": "500", "order_count": "12"},
+    ]
+    payload = build_dashboard_payload(roster, [], [], [], [], discount_rows, date(2026, 7, 7))
+    daily = payload["stores"][0]["discounts"]["daily"]
+    assert len(daily) == 2
+
+
+def test_discounts_excluded_for_today_and_missing_by_default():
+    discount_rows = [
+        {"order_date": "2026-07-20", "store_name": "PNQ KK Ravet", "channel": "swiggy",
+         "gross_sales": "1000", "discount": "200", "aggregator_discount": "0", "merchant_discount": "200", "order_count": "5"},
+    ]
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], discount_rows, date(2026, 7, 20))
+    assert payload["stores"][0]["discounts"]["daily"] == []
+
+
+def test_store_with_no_discount_rows_has_empty_discounts():
+    payload = build_dashboard_payload(RAVET_ROSTER, [], [], [], [], [], date(2026, 8, 18))
+    assert payload["stores"][0]["discounts"]["daily"] == []

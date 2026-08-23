@@ -17,6 +17,7 @@ from build.queries import (
     build_offline_revenue_query,
     build_ops_metrics_query,
     build_cancellation_detail_query,
+    build_discount_detail_query,
 )
 from build.rename_guard import resolve_new_stores, filter_unknown_places
 from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES, MANUAL_ALIAS_OVERRIDES, MANUAL_ADDITIONAL_STORES
@@ -99,8 +100,9 @@ def run(query_runner, today, previous_store_count):
     offline_revenue_rows = query_runner(build_offline_revenue_query(all_aliases, window_start, today)) if all_aliases else []
     ops_rows = query_runner(build_ops_metrics_query(all_aliases, window_start, today)) if all_aliases else []
     cancellation_rows = query_runner(build_cancellation_detail_query(all_aliases, window_start, today)) if all_aliases else []
+    discount_rows = query_runner(build_discount_detail_query(all_aliases, window_start, today)) if all_aliases else []
 
-    payload = build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, cancellation_rows, today)
+    payload = build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, cancellation_rows, discount_rows, today)
     payload["generated_at_ist"] = datetime.now(IST).isoformat()
     payload["window_days"] = WINDOW_DAYS
 
