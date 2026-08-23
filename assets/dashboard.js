@@ -131,7 +131,7 @@ function launchBandLabel(days) {
 
 // ---------- sparkline (inline SVG, built via DOM — no innerHTML) ----------
 
-function renderSparkline(container, values) {
+function renderSparkline(container, values, strokeColor) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 100 24');
   svg.setAttribute('class', 'spark');
@@ -151,7 +151,7 @@ function renderSparkline(container, values) {
     const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
     poly.setAttribute('points', pts);
     poly.setAttribute('fill', 'none');
-    poly.setAttribute('stroke', '#0a6b3f');
+    poly.setAttribute('stroke', strokeColor || '#0a6b3f');
     poly.setAttribute('stroke-width', '2');
     poly.setAttribute('stroke-linecap', 'round');
     poly.setAttribute('stroke-linejoin', 'round');
@@ -386,6 +386,21 @@ function dailyInRange(daily, start, end) {
   return daily.filter(d => d.date >= start && d.date <= end);
 }
 
+function cancellationRateByDay(opsComputedDaily, range) {
+  const byDate = {};
+  for (const d of opsComputedDaily) {
+    if (d.date < range.start || d.date > range.end) continue;
+    const entry = byDate[d.date] || { orders: 0, cancelled: 0 };
+    entry.orders += d.order_count;
+    entry.cancelled += d.cancelled_orders;
+    byDate[d.date] = entry;
+  }
+  return Object.keys(byDate).sort().map(date => {
+    const { orders, cancelled } = byDate[date];
+    return orders > 0 ? (cancelled / orders) * 100 : 0;
+  });
+}
+
 function renderStoreCards(stores, severityMap, range) {
   const el = document.getElementById('store-grid');
   el.innerHTML = '';
@@ -427,6 +442,16 @@ function renderStoreCards(stores, severityMap, range) {
     const values = daysInRange.map(d => d.total);
     if (values.length >= 2) renderSparkline(sparkWrap, values);
     card.appendChild(sparkWrap);
+
+    const cancellationValues = cancellationRateByDay(s.ops_computed.daily, range);
+    if (cancellationValues.length >= 2 && cancellationValues.some(v => v > 0)) {
+      const cancelLabel = document.createElement('div'); cancelLabel.className = 'revenue-label';
+      cancelLabel.textContent = 'Cancellation % trend';
+      card.appendChild(cancelLabel);
+      const cancelSparkWrap = document.createElement('div');
+      renderSparkline(cancelSparkWrap, cancellationValues, '#c1272d');
+      card.appendChild(cancelSparkWrap);
+    }
 
     const meta = document.createElement('div'); meta.className = 'meta-row';
     const wtdSpan = document.createElement('span'); wtdSpan.textContent = `WTD ${fmtMoneyCompact(s.revenue.wtd.total)}`;
@@ -767,6 +792,83 @@ function renderHealthTable(stores, range) {
   renderSortableTable('health-table', HEALTH_COLUMNS, rows, healthSortState);
 }
 
+// ---------- Cancellations — who & why ----------
+
+const CANCELLED_BY_LABELS = { aggregator: 'Aggregator', merchant: 'Merchant', customer: 'Customer', unknown: 'Unknown' };
+
+function cancellationsInRange(stores, range) {
+  const rows = [];
+  for (const s of stores) {
+    for (const c of s.cancellations.daily) {
+      if (c.date >= range.start && c.date <= range.end) rows.push(c);
+    }
+  }
+  return rows;
+}
+
+function renderCancellationSummary(rows) {
+  const el = document.getElementById('cancellation-summary');
+  el.innerHTML = '';
+  const total = rows.reduce((sum, r) => sum + r.count, 0);
+
+  const c1 = kpiCard();
+  addKpiText(c1, 'label', 'Total Cancelled Orders');
+  addKpiText(c1, 'value', String(total));
+  el.appendChild(c1);
+
+  if (total === 0) {
+    const note = document.createElement('div');
+    note.className = 'empty-note';
+    note.textContent = 'No cancellations in this filter.';
+    el.appendChild(note);
+    return;
+  }
+
+  const byWhom = {};
+  for (const r of rows) byWhom[r.cancelled_by] = (byWhom[r.cancelled_by] || 0) + r.count;
+
+  for (const key of Object.keys(byWhom).sort((a, b) => byWhom[b] - byWhom[a])) {
+    const pct = (byWhom[key] / total) * 100;
+    const c = kpiCard();
+    addKpiText(c, 'label', CANCELLED_BY_LABELS[key] || key);
+    addKpiText(c, 'value', `${pct.toFixed(0)}%`);
+    addKpiText(c, 'sub', `${byWhom[key]} orders`);
+    el.appendChild(c);
+  }
+}
+
+function buildReasonRows(rows) {
+  const total = rows.reduce((sum, r) => sum + r.count, 0);
+  const byKey = {};
+  for (const r of rows) {
+    const key = r.reason + '|' + r.cancelled_by;
+    (byKey[key] = byKey[key] || { reason: r.reason, cancelledBy: r.cancelled_by, count: 0 }).count += r.count;
+  }
+  return Object.values(byKey)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 15)
+    .map(r => ({ ...r, pct: total > 0 ? (r.count / total) * 100 : 0 }));
+}
+
+const CANCELLATION_COLUMNS = [
+  { label: 'Reason', value: r => r.reason, display: r => r.reason, storeCell: true },
+  { label: 'Cancelled By', value: r => r.cancelledBy, display: r => CANCELLED_BY_LABELS[r.cancelledBy] || r.cancelledBy },
+  { label: 'Orders', value: r => r.count, numeric: true, display: r => String(r.count) },
+  { label: '% of Cancellations', value: r => r.pct, numeric: true, display: r => `${r.pct.toFixed(1)}%` },
+];
+
+const cancellationSortState = { col: 2, dir: -1 };
+
+function renderCancellationTable(rows) {
+  renderSortableTable('cancellation-table', CANCELLATION_COLUMNS, rows, cancellationSortState);
+}
+
+function renderCancellationSection(stores, range) {
+  const rows = cancellationsInRange(stores, range);
+  renderCancellationSummary(rows);
+  renderCancellationTable(buildReasonRows(rows));
+}
+
 // ---------- boot ----------
 
 async function loadData() {
@@ -801,6 +903,7 @@ function renderAll({ dashboard }) {
     renderStoreCards(filtered, severityMap, currentRange);
     renderDetailTable(filtered, currentRange);
     renderHealthTable(filtered, currentRange);
+    renderCancellationSection(filtered, currentRange);
   };
 
   const handleCityChange = (city) => {

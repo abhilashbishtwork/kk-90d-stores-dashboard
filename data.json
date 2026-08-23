@@ -1465,6 +1465,108 @@
             "kpt_p80_minutes": 0.8
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-06-05",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-06-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-04",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-06",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-14",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-19",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-22",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-24",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation because they do not require order anymore",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item Out Of Stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation because they do not require order anymore",
+            "count": 1
+          }
+        ]
       }
     },
     {
@@ -2817,6 +2919,38 @@
             "order_count": 1,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 1.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-22",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-22",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
           }
         ]
       }
@@ -4431,6 +4565,52 @@
             "order_count": 16,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 11.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-03",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to delay",
+            "count": 1
+          },
+          {
+            "date": "2026-07-07",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to delay",
+            "count": 1
+          },
+          {
+            "date": "2026-08-06",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer not responding",
+            "count": 1
+          },
+          {
+            "date": "2026-08-09",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-10",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Merchant device or electricity issue",
+            "count": 1
           }
         ]
       }
@@ -6281,6 +6461,101 @@
             "kpt_p80_minutes": 2.0
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-06-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-06-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to delay",
+            "count": 1
+          },
+          {
+            "date": "2026-07-02",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-07",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-24",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-05",
+            "channel": "swiggy",
+            "cancelled_by": "merchant",
+            "reason": "Swiggy Order Modification",
+            "count": 1
+          },
+          {
+            "date": "2026-08-05",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-14",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-17",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          }
+        ]
       }
     },
     {
@@ -6364,6 +6639,9 @@
         }
       },
       "ops_computed": {
+        "daily": []
+      },
+      "cancellations": {
         "daily": []
       }
     },
@@ -6921,10 +7199,10 @@
             "date": "2026-08-19",
             "online": {
               "swiggy": 499.0,
-              "zomato": 5310.96,
+              "zomato": 5310.960000000001,
               "ownly": 0.0
             },
-            "total": 6781.96,
+            "total": 6781.960000000001,
             "online_orders": 13,
             "orders_by_channel": {
               "swiggy": 1,
@@ -8206,6 +8484,332 @@
             "order_count": 4,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 1.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-05-29",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-05-29",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-06-03",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-06-13",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-06-15",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-06-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          },
+          {
+            "date": "2026-06-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-06-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-21",
+            "channel": "swiggy",
+            "cancelled_by": "merchant",
+            "reason": "Swiggy Order Modification",
+            "count": 1
+          },
+          {
+            "date": "2026-06-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-22",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-23",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          },
+          {
+            "date": "2026-06-25",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-27",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          },
+          {
+            "date": "2026-06-28",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-06-30",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-06-30",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-02",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-03",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-07",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-10",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-11",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-22",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-22",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 3
+          },
+          {
+            "date": "2026-07-25",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-28",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-10",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant could not confirm (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-12",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-14",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation",
+            "count": 2
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-19",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
           }
         ]
       }
@@ -9665,7 +10269,7 @@
             "date": "2026-08-19",
             "online": {
               "swiggy": 1497.01,
-              "zomato": 6835.72,
+              "zomato": 6835.719999999999,
               "ownly": 0.0
             },
             "total": 8332.73,
@@ -10922,6 +11526,178 @@
             "order_count": 1,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 0.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-06-05",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-09",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-06-10",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-06-14",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-06-30",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-06",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-07-07",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-19",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-22",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-23",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-26",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-26",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-30",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to incorrect address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-12",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item Out Of Stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-22",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
           }
         ]
       }
@@ -12877,6 +13653,192 @@
             "kpt_p80_minutes": 0.0
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-05-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-06-04",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation due to long delivery distance",
+            "count": 1
+          },
+          {
+            "date": "2026-06-06",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-06-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-06-14",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 5
+          },
+          {
+            "date": "2026-06-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-06-19",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-06-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-06-25",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner issue (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-07-03",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-15",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-17",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-18",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-05",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-07",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer not responding",
+            "count": 1
+          },
+          {
+            "date": "2026-08-09",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-10",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-11",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer not responding",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-08-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation due to high wait time",
+            "count": 1
+          }
+        ]
       }
     },
     {
@@ -13242,6 +14204,17 @@
             "order_count": 3,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 5.6
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-08-07",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
           }
         ]
       }
@@ -13820,6 +14793,9 @@
         }
       },
       "ops_computed": {
+        "daily": []
+      },
+      "cancellations": {
         "daily": []
       }
     },
@@ -14500,6 +15476,17 @@
             "kpt_p80_minutes": 2.0
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-08-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          }
+        ]
       }
     },
     {
@@ -14583,6 +15570,9 @@
         }
       },
       "ops_computed": {
+        "daily": []
+      },
+      "cancellations": {
         "daily": []
       }
     },
@@ -15248,6 +16238,52 @@
             "kpt_p80_minutes": 2.2
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-08-04",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner not responding",
+            "count": 1
+          },
+          {
+            "date": "2026-08-07",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item Out Of Stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          }
+        ]
       }
     },
     {
@@ -15882,6 +16918,66 @@
             "order_count": 4,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 6.8
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-08-06",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 2
+          },
+          {
+            "date": "2026-08-14",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-14",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-18",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-18",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-19",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation",
+            "count": 1
           }
         ]
       }
@@ -16566,6 +17662,94 @@
             "order_count": 11,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 8.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 2
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-02",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-10",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to delay",
+            "count": 1
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-18",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-19",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
           }
         ]
       }
@@ -17343,6 +18527,45 @@
             "order_count": 1,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 1.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-29",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-09",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-11",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-21",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
           }
         ]
       }
@@ -18129,6 +19352,59 @@
             "kpt_p80_minutes": 34.6
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-05",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner not responding",
+            "count": 1
+          },
+          {
+            "date": "2026-08-06",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-07",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-19",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          }
+        ]
       }
     },
     {
@@ -18478,6 +19754,73 @@
             "order_count": 3,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 0.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-18",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant could not confirm (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-02",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
           }
         ]
       }
@@ -19498,6 +20841,38 @@
             "order_count": 1,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 10.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-08-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
           }
         ]
       }
@@ -20782,6 +22157,45 @@
             "order_count": 3,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 7.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-07",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-09",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
           }
         ]
       }
@@ -22255,6 +23669,87 @@
             "order_count": 3,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 7.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-18",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-19",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-25",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-30",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          },
+          {
+            "date": "2026-08-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-14",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
           }
         ]
       }
@@ -23868,6 +25363,108 @@
             "kpt_p80_minutes": 6.0
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-14",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-16",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-19",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-23",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-30",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-03",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant closed (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-08-07",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-15",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to incorrect address",
+            "count": 1
+          },
+          {
+            "date": "2026-08-19",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          },
+          {
+            "date": "2026-08-19",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-20",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-22",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-22",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          }
+        ]
       }
     },
     {
@@ -25387,6 +26984,136 @@
             "order_count": 5,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 8.4
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-02",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-12",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-12",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-14",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-15",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-18",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-18",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-18",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-21",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 2
+          },
+          {
+            "date": "2026-07-23",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-28",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-28",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-29",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-31",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-08-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-10",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Restaurant could not confirm (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 2
           }
         ]
       }
@@ -27008,6 +28735,94 @@
             "order_count": 6,
             "cancelled_orders": 0,
             "kpt_p80_minutes": 7.0
+          }
+        ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-07-24",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Kitchen is full",
+            "count": 1
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item Out Of Stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-28",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-29",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner cancellation due to high wait time",
+            "count": 1
+          },
+          {
+            "date": "2026-07-30",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-02",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer cancellation due to delay",
+            "count": 1
+          },
+          {
+            "date": "2026-08-03",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner issue (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Item Out Of Stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-05",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner not responding",
+            "count": 1
+          },
+          {
+            "date": "2026-08-08",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
           }
         ]
       }
@@ -28766,9 +30581,286 @@
             "kpt_p80_minutes": 3.4
           }
         ]
+      },
+      "cancellations": {
+        "daily": [
+          {
+            "date": "2026-06-27",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 1
+          },
+          {
+            "date": "2026-06-28",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 2
+          },
+          {
+            "date": "2026-06-29",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-06-30",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Wrong merchant address",
+            "count": 1
+          },
+          {
+            "date": "2026-07-05",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Outlet closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-08",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-09",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-09",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Busy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-10",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-07-11",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-07-11",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-11",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Busy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-13",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 1
+          },
+          {
+            "date": "2026-07-13",
+            "channel": "swiggy",
+            "cancelled_by": "merchant",
+            "reason": "Swiggy Order Modification",
+            "count": 1
+          },
+          {
+            "date": "2026-07-14",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-15",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-17",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-07-20",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-25",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-25",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Busy",
+            "count": 2
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-07-27",
+            "channel": "zomato",
+            "cancelled_by": "merchant",
+            "reason": "Store Closed",
+            "count": 2
+          },
+          {
+            "date": "2026-07-29",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Delivery partner issue (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-01",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-02",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Cancelled by Swiggy",
+            "count": 1
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 2
+          },
+          {
+            "date": "2026-08-04",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Other (code 14)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-07",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Order running late (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-07",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-09",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Items out of stock",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "swiggy",
+            "cancelled_by": "aggregator",
+            "reason": "Item out of stock (Swiggy)",
+            "count": 1
+          },
+          {
+            "date": "2026-08-13",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-16",
+            "channel": "zomato",
+            "cancelled_by": "aggregator",
+            "reason": "Customer Cancellation",
+            "count": 1
+          },
+          {
+            "date": "2026-08-22",
+            "channel": "swiggy",
+            "cancelled_by": "merchant",
+            "reason": "Swiggy Order Modification",
+            "count": 1
+          }
+        ]
       }
     }
   ],
-  "generated_at_ist": "2026-08-23T16:33:51.654869+05:30",
+  "generated_at_ist": "2026-08-23T17:03:26.415968+05:30",
   "window_days": 90
 }

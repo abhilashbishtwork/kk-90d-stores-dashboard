@@ -4,8 +4,11 @@ from datetime import date
 from build.build_data import run, read_previous_store_count
 
 
-def _fake_runner(online_history_rows, revenue_rows, ops_rows, any_channel_history_rows=None, offline_revenue_rows=None):
+def _fake_runner(online_history_rows, revenue_rows, ops_rows, any_channel_history_rows=None,
+                  offline_revenue_rows=None, cancellation_rows=None):
     def runner(sql):
+        if "cancellation_transitions_pivoted" in sql:
+            return cancellation_rows if cancellation_rows is not None else []
         if "transitions_pivoted" in sql:
             return ops_rows
         if "orders_state_transitions" in sql:
@@ -218,6 +221,30 @@ def test_run_includes_a_manually_added_store_with_its_own_launch_date(tmp_path, 
     mantri = next(s for s in json.loads(fake_path.read_text())["stores"] if s["store_name"] == "BLR KK Mantri Mall")
     assert mantri["launch_date"] == "2026-08-13"
     assert [d["date"] for d in mantri["revenue"]["daily"]] == ["2026-08-14"]
+
+
+def test_run_wires_cancellation_detail_rows_into_the_payload(tmp_path, monkeypatch):
+    fake_path = tmp_path / "data.json"
+    monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+    monkeypatch.setattr("build.build_data.MANUAL_ADDITIONAL_STORES", [])
+
+    online_history_rows = [
+        {"store_name": "PNQ KK Ravet", "first_seen": "2026-07-17", "last_seen": "2026-08-20"},
+    ]
+    cancellation_rows = [
+        {"order_date": "2026-08-17", "store_name": "PNQ KK Ravet", "channel": "swiggy",
+         "cancelled_by": "merchant", "cancelled_reason": "store_busy", "cancellation_message": "", "cancelled_orders": "2"},
+    ]
+    runner = _fake_runner(online_history_rows, [], [], cancellation_rows=cancellation_rows)
+
+    result = run(runner, date(2026, 8, 18), previous_store_count=None)
+
+    assert result is True
+    ravet = json.loads(fake_path.read_text())["stores"][0]
+    assert ravet["cancellations"]["daily"] == [{
+        "date": "2026-08-17", "channel": "swiggy", "cancelled_by": "merchant",
+        "reason": "Store busy", "count": 2,
+    }]
 
 
 def test_read_previous_store_count_from_existing_file(tmp_path):

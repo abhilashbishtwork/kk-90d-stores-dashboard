@@ -10,6 +10,7 @@ from datetime import timedelta
 
 from build.cities import city_for, display_name_for
 from build.ratings_snapshot import ratings_for, SNAPSHOT_DATE as RATINGS_SNAPSHOT_DATE
+from build.cancellation_reasons import normalize_reason
 
 
 def _empty_channel_totals():
@@ -46,7 +47,7 @@ def _empty_date_entry():
     }
 
 
-def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, today_ist):
+def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows, cancellation_rows, today_ist):
     today_str = str(today_ist)
     alias_to_canonical = {alias: s["store_name"] for s in roster for alias in s["aliases"]}
 
@@ -82,6 +83,20 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
             "order_count": int(r["total_orders"]),
             "cancelled_orders": int(r["cancelled_orders"]),
             "kpt_p80_minutes": round(float(kpt_raw), 1) if kpt_raw not in ("", None, "nan", "\\N") else None,
+        })
+
+    by_store_cancellations = {}
+    for r in cancellation_rows:
+        canonical = alias_to_canonical.get(r["store_name"])
+        if canonical is None:
+            continue
+        reason = normalize_reason(r.get("cancelled_reason"), r.get("cancellation_message"))
+        by_store_cancellations.setdefault(canonical, []).append({
+            "date": r["order_date"],
+            "channel": r["channel"],
+            "cancelled_by": r["cancelled_by"] or "unknown",
+            "reason": reason,
+            "count": int(r["cancelled_orders"]),
         })
 
     complete_dates = sorted({d for (_, d) in by_store_date if d != today_str})
@@ -134,6 +149,12 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
             "ops_computed": {
                 "daily": sorted(
                     (d for d in by_store_ops.get(store_name, []) if d["date"] != today_str),
+                    key=lambda d: d["date"],
+                ),
+            },
+            "cancellations": {
+                "daily": sorted(
+                    (d for d in by_store_cancellations.get(store_name, []) if d["date"] != today_str),
                     key=lambda d: d["date"],
                 ),
             },

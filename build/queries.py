@@ -140,3 +140,46 @@ def build_ops_metrics_query(store_names, start_date, end_date):
         GROUP BY order_date, store_name, channel
         FORMAT TabSeparatedWithNames
     """.strip()
+
+
+def build_cancellation_detail_query(store_names, start_date, end_date):
+    """Cancelled-order detail (who cancelled, why) — a separate pull from
+    `build_ops_metrics_query` because `cancelled_reason` is truncated
+    upstream (~30 chars) while `cancellation_message` usually carries
+    the full text; both are needed for `cancellation_reasons.normalize_reason`
+    to extract a clean label. Scoped to swiggy/zomato only, matching the
+    ops-metrics query — dine-in has no comparable cancellation concept
+    in this data."""
+    stores_sql = _store_list_sql(store_names)
+    return f"""
+        WITH cancellation_transitions_pivoted AS (
+            SELECT
+                brand_id,
+                order_id,
+                argMax(to_status, status_changed_at_ist) AS final_status,
+                argMax(cancelled_by, status_changed_at_ist) AS cancelled_by,
+                argMax(cancelled_reason, status_changed_at_ist) AS cancelled_reason,
+                argMax(cancellation_message, status_changed_at_ist) AS cancellation_message
+            FROM orders_state_transitions
+            WHERE brand_id = {BRAND_ID}
+            GROUP BY brand_id, order_id
+        )
+        SELECT
+            toDate(o.created_at_ist) AS order_date,
+            o.store_name AS store_name,
+            o.channel AS channel,
+            ifNull(t.cancelled_by, '') AS cancelled_by,
+            ifNull(t.cancelled_reason, '') AS cancelled_reason,
+            ifNull(t.cancellation_message, '') AS cancellation_message,
+            count(*) AS cancelled_orders
+        FROM orders o
+        JOIN cancellation_transitions_pivoted t ON t.brand_id = {BRAND_ID} AND t.order_id = o.id
+        WHERE o.brand_id = {BRAND_ID}
+          AND o.store_name IN ({stores_sql})
+          AND o.channel IN ('swiggy', 'zomato')
+          AND t.final_status IN ('Cancelled', 'customer_cancelled')
+          AND toDate(o.created_at_ist) >= toDate('{start_date}', 'Asia/Kolkata')
+          AND toDate(o.created_at_ist) <= toDate('{end_date}', 'Asia/Kolkata')
+        GROUP BY order_date, store_name, channel, cancelled_by, cancelled_reason, cancellation_message
+        FORMAT TabSeparatedWithNames
+    """.strip()

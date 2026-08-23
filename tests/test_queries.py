@@ -6,6 +6,7 @@ from build.queries import (
     build_revenue_query,
     build_offline_revenue_query,
     build_ops_metrics_query,
+    build_cancellation_detail_query,
 )
 
 STORES = ["PNQ KK Ravet", "BLR KK SB Sarjapura - Krispy Kreme", "BLR KK SB Sarjapura"]
@@ -81,3 +82,23 @@ def test_ops_metrics_query_scoped_to_swiggy_zomato_and_kpt_p80():
     sql = build_ops_metrics_query(STORES, START, END)
     assert "channel IN ('swiggy', 'zomato')" in sql
     assert "quantileIf(0.8)" in sql
+
+
+def test_cancellation_detail_query_scopes_to_cancelled_orders_only():
+    sql = build_cancellation_detail_query(STORES, START, END)
+    assert f"brand_id = {BRAND_ID}" in sql
+    assert "'Cancelled', 'customer_cancelled'" in sql
+    assert "'PNQ KK Ravet'" in sql
+
+
+def test_cancellation_detail_query_selects_reason_fields():
+    sql = build_cancellation_detail_query(STORES, START, END)
+    assert "cancelled_by" in sql
+    assert "cancelled_reason" in sql
+    assert "cancellation_message" in sql
+
+
+def test_cancellation_detail_query_uses_ist_date_bounds():
+    sql = build_cancellation_detail_query(STORES, START, END)
+    assert "toDate('2026-05-23', 'Asia/Kolkata')" in sql
+    assert "toDate('2026-08-21', 'Asia/Kolkata')" in sql
