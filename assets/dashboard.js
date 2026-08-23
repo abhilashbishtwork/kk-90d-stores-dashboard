@@ -293,21 +293,44 @@ function renderKpis(k) {
 
 // ---------- alerts ----------
 
+// zero_orders/zero_swiggy_orders/zero_zomato_orders are three distinct
+// signals in computeAlerts (useful separately elsewhere), but the same
+// store often triggers more than one at once — displaying them as three
+// separate group boxes repeats the same store names three times. Merged
+// into a single "Zero Orders" group here, one chip per store, labeled
+// with whichever scope(s) applied (just "Total" when the combined
+// zero_orders alert fired, since that already implies every channel is
+// zero — no need to also spell out Swiggy/Zomato redundantly).
+const ZERO_ORDERS_TYPES = ['zero_orders', 'zero_swiggy_orders', 'zero_zomato_orders'];
+const ZERO_ORDERS_SCOPE_LABELS = { zero_orders: 'Total', zero_swiggy_orders: 'Swiggy', zero_zomato_orders: 'Zomato' };
+
+function mergeZeroOrdersAlerts(alerts) {
+  const zeroOrderAlerts = alerts.filter(a => ZERO_ORDERS_TYPES.includes(a.type));
+  const rest = alerts.filter(a => !ZERO_ORDERS_TYPES.includes(a.type));
+  if (zeroOrderAlerts.length === 0) return rest;
+
+  const scopesByStore = {};
+  for (const a of zeroOrderAlerts) (scopesByStore[a.store] = scopesByStore[a.store] || new Set()).add(a.type);
+
+  const merged = Object.keys(scopesByStore).map(store => {
+    const scopes = scopesByStore[store];
+    const value = scopes.has('zero_orders') ? 'Total' : [...scopes].map(t => ZERO_ORDERS_SCOPE_LABELS[t]).join(', ');
+    return { store, type: 'zero_orders', value };
+  });
+  return [...merged, ...rest];
+}
+
 const ALERT_GROUP_LABELS = {
   zero_orders: 'Zero Orders',
-  zero_swiggy_orders: 'Zero Orders — Swiggy',
-  zero_zomato_orders: 'Zero Orders — Zomato',
   cancellation_high: 'Cancellations',
   kpt_high: 'Slow KPT',
   low_online_opd: 'Low Online Orders',
 };
 
-const ALERT_GROUP_ORDER = [
-  'Zero Orders', 'Zero Orders — Swiggy', 'Zero Orders — Zomato',
-  'Cancellations', 'Slow KPT', 'Low Online Orders',
-];
+const ALERT_GROUP_ORDER = ['Zero Orders', 'Cancellations', 'Slow KPT', 'Low Online Orders'];
 
-function renderAlerts(alerts) {
+function renderAlerts(rawAlerts) {
+  const alerts = mergeZeroOrdersAlerts(rawAlerts);
   const el = document.getElementById('alerts-list');
   el.innerHTML = '';
   if (alerts.length === 0) {
