@@ -11430,14 +11430,14 @@
               "zomato": 0.0,
               "ownly": 0.0
             },
-            "total": 12291.470000000001,
+            "total": 12291.470000000003,
             "online_orders": 0,
             "orders_by_channel": {
               "swiggy": 0,
               "zomato": 0,
               "ownly": 0
             },
-            "dine_in": 12291.470000000001,
+            "dine_in": 12291.470000000003,
             "dine_in_orders": 59
           }
         ],
@@ -11450,16 +11450,16 @@
         },
         "mtd": {
           "online": 0.0,
-          "total": 29738.670000000002,
+          "total": 29738.670000000006,
           "online_orders": 0,
-          "dine_in": 29738.670000000002,
+          "dine_in": 29738.670000000006,
           "dine_in_orders": 131
         },
         "lifetime": {
           "online": 0.0,
-          "total": 29738.670000000002,
+          "total": 29738.670000000006,
           "online_orders": 0,
-          "dine_in": 29738.670000000002,
+          "dine_in": 29738.670000000006,
           "dine_in_orders": 131
         }
       },
@@ -24642,14 +24642,14 @@
               "zomato": 0.0,
               "ownly": 0.0
             },
-            "total": 7040.6900000000005,
+            "total": 7040.690000000001,
             "online_orders": 0,
             "orders_by_channel": {
               "swiggy": 0,
               "zomato": 0,
               "ownly": 0
             },
-            "dine_in": 7040.6900000000005,
+            "dine_in": 7040.690000000001,
             "dine_in_orders": 29
           }
         ],
@@ -44396,10 +44396,10 @@
             "date": "2026-08-23",
             "online": {
               "swiggy": 1813.02,
-              "zomato": 7092.3099999999995,
+              "zomato": 7092.309999999999,
               "ownly": 0.0
             },
-            "total": 8905.33,
+            "total": 8905.329999999998,
             "online_orders": 24,
             "orders_by_channel": {
               "swiggy": 5,
@@ -49237,7 +49237,7 @@
             "date": "2026-08-23",
             "channel": "swiggy",
             "gross_sales": 11350.0,
-            "discount": 3183.879999999999,
+            "discount": 3183.8799999999997,
             "aggregator_discount": 0.0,
             "merchant_discount": 3183.8999999999996,
             "orders": 24
@@ -49255,6 +49255,6 @@
       }
     }
   ],
-  "generated_at_ist": "2026-08-24T00:33:24.960844+05:30",
+  "generated_at_ist": "2026-08-24T00:43:01.890782+05:30",
   "window_days": 90
 }
