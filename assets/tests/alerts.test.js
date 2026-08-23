@@ -25,6 +25,54 @@ test('computeAlerts suppresses zero-revenue alert when store has no history yet 
   assert.strictEqual(alerts.some(a => a.type === 'zero_revenue'), false);
 });
 
+test('computeAlerts flags zero Swiggy revenue when Swiggy history exists', () => {
+  const stores = [{
+    display_name: 'Ravet', launch_date: '2026-07-17',
+    revenue: { daily: [
+      { date: '2026-08-17', online: { swiggy: 200, zomato: 100, ownly: 0 }, total: 300, online_orders: 8 },
+      { date: '2026-08-18', online: { swiggy: 0, zomato: 150, ownly: 0 }, total: 150, online_orders: 5 },
+    ] },
+  }];
+  const alerts = computeAlerts(stores, THRESHOLDS, '2026-08-19');
+  assert.ok(alerts.some(a => a.type === 'zero_swiggy_revenue'));
+});
+
+test('computeAlerts does not flag zero Swiggy revenue when the store never had Swiggy revenue', () => {
+  const stores = [{
+    display_name: 'GIP Mall', launch_date: '2026-07-23',
+    revenue: { daily: [
+      { date: '2026-08-17', online: { swiggy: 0, zomato: 0, ownly: 0 }, total: 200, online_orders: 0 },
+      { date: '2026-08-18', online: { swiggy: 0, zomato: 0, ownly: 0 }, total: 0, online_orders: 0 },
+    ] },
+  }];
+  const alerts = computeAlerts(stores, THRESHOLDS, '2026-08-19');
+  assert.strictEqual(alerts.some(a => a.type === 'zero_swiggy_revenue'), false);
+});
+
+test('computeAlerts flags zero Zomato revenue when Zomato history exists', () => {
+  const stores = [{
+    display_name: 'Ravet', launch_date: '2026-07-17',
+    revenue: { daily: [
+      { date: '2026-08-17', online: { swiggy: 100, zomato: 200, ownly: 0 }, total: 300, online_orders: 8 },
+      { date: '2026-08-18', online: { swiggy: 150, zomato: 0, ownly: 0 }, total: 150, online_orders: 5 },
+    ] },
+  }];
+  const alerts = computeAlerts(stores, THRESHOLDS, '2026-08-19');
+  assert.ok(alerts.some(a => a.type === 'zero_zomato_revenue'));
+});
+
+test('computeAlerts does not flag zero Zomato revenue when the store never had Zomato revenue', () => {
+  const stores = [{
+    display_name: 'GIP Mall', launch_date: '2026-07-23',
+    revenue: { daily: [
+      { date: '2026-08-17', online: { swiggy: 0, zomato: 0, ownly: 0 }, total: 200, online_orders: 0 },
+      { date: '2026-08-18', online: { swiggy: 0, zomato: 0, ownly: 0 }, total: 0, online_orders: 0 },
+    ] },
+  }];
+  const alerts = computeAlerts(stores, THRESHOLDS, '2026-08-19');
+  assert.strictEqual(alerts.some(a => a.type === 'zero_zomato_revenue'), false);
+});
+
 test('computeAlerts flags low online orders-per-day for the most recent day', () => {
   const stores = [{
     display_name: 'Kothrud', launch_date: '2026-07-07',

@@ -10,6 +10,17 @@ function computeAlerts(stores, thresholds, todayStr) {
       if (hasAnyHistory && (!todayEntry || todayEntry.total === 0)) {
         alerts.push({ store: store.display_name, type: 'zero_revenue', value: '₹0', detail: `No revenue recorded for ${todayStr}` });
       }
+
+      const hasSwiggyHistory = store.revenue.daily.some(d => d.date < todayStr && d.online.swiggy > 0);
+      if (hasSwiggyHistory && (!todayEntry || todayEntry.online.swiggy === 0)) {
+        alerts.push({ store: store.display_name, type: 'zero_swiggy_revenue', value: '₹0', detail: `No Swiggy revenue recorded for ${todayStr}` });
+      }
+
+      const hasZomatoHistory = store.revenue.daily.some(d => d.date < todayStr && d.online.zomato > 0);
+      if (hasZomatoHistory && (!todayEntry || todayEntry.online.zomato === 0)) {
+        alerts.push({ store: store.display_name, type: 'zero_zomato_revenue', value: '₹0', detail: `No Zomato revenue recorded for ${todayStr}` });
+      }
+
       if (todayEntry && todayEntry.online_orders < thresholds.min_online_opd) {
         alerts.push({ store: store.display_name, type: 'low_online_opd', value: String(todayEntry.online_orders), detail: `Only ${todayEntry.online_orders} online orders on ${todayStr} (< ${thresholds.min_online_opd})` });
       }
