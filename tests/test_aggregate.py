@@ -218,7 +218,7 @@ def test_cancellations_rolled_up_with_normalized_reason():
     daily = payload["stores"][0]["cancellations"]["daily"]
     assert daily == [{
         "date": "2026-07-17", "channel": "swiggy", "cancelled_by": "aggregator",
-        "reason": "Items out of stock", "count": 3,
+        "reason": "Item out of stock", "count": 3, "caused_by": "Restaurant",
     }]
 
 
@@ -235,7 +235,7 @@ def test_cancellations_rolls_up_across_aliases():
     payload = build_dashboard_payload(roster, [], [], [], cancellation_rows, [], date(2026, 7, 6))
     daily = payload["stores"][0]["cancellations"]["daily"]
     assert len(daily) == 1
-    assert daily[0]["reason"] == "Store closed"
+    assert daily[0]["reason"] == "Restaurant closed"
 
 
 def test_cancellations_excluded_for_today_and_missing_by_default():

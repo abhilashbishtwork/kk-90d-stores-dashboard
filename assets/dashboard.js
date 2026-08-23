@@ -298,12 +298,12 @@ function renderKpis(k) {
 // signals in computeAlerts (useful separately elsewhere), but the same
 // store often triggers more than one at once — displaying them as three
 // separate group boxes repeats the same store names three times. Merged
-// into a single "Zero Orders" group here, one chip per store, labeled
-// with whichever scope(s) applied (just "Total" when the combined
-// zero_orders alert fired, since that already implies every channel is
-// zero — no need to also spell out Swiggy/Zomato redundantly).
+// into a single group here, one chip per store, spelling out exactly
+// which channel(s) are at zero ("Swiggy & Zomato", not the ambiguous
+// "Total") — falls back to "Total" only for the rare case where the
+// store has no per-channel order history at all to attribute it to.
 const ZERO_ORDERS_TYPES = ['zero_orders', 'zero_swiggy_orders', 'zero_zomato_orders'];
-const ZERO_ORDERS_SCOPE_LABELS = { zero_orders: 'Total', zero_swiggy_orders: 'Swiggy', zero_zomato_orders: 'Zomato' };
+const ZERO_ORDERS_SCOPE_LABELS = { zero_swiggy_orders: 'Swiggy', zero_zomato_orders: 'Zomato' };
 
 function mergeZeroOrdersAlerts(alerts) {
   const zeroOrderAlerts = alerts.filter(a => ZERO_ORDERS_TYPES.includes(a.type));
@@ -315,20 +315,21 @@ function mergeZeroOrdersAlerts(alerts) {
 
   const merged = Object.keys(scopesByStore).map(store => {
     const scopes = scopesByStore[store];
-    const value = scopes.has('zero_orders') ? 'Total' : [...scopes].map(t => ZERO_ORDERS_SCOPE_LABELS[t]).join(', ');
+    const channelScopes = ['zero_swiggy_orders', 'zero_zomato_orders'].filter(t => scopes.has(t));
+    const value = channelScopes.length > 0 ? channelScopes.map(t => ZERO_ORDERS_SCOPE_LABELS[t]).join(' & ') : 'Total';
     return { store, type: 'zero_orders', value };
   });
   return [...merged, ...rest];
 }
 
 const ALERT_GROUP_LABELS = {
-  zero_orders: 'Zero Orders',
+  zero_orders: 'Zero Order Stores',
   cancellation_high: 'Cancellations',
   kpt_high: 'Slow KPT',
   low_online_opd: 'Low Online Orders',
 };
 
-const ALERT_GROUP_ORDER = ['Zero Orders', 'Cancellations', 'Slow KPT', 'Low Online Orders'];
+const ALERT_GROUP_ORDER = ['Zero Order Stores', 'Cancellations', 'Slow KPT', 'Low Online Orders'];
 
 function renderAlerts(rawAlerts) {
   const alerts = mergeZeroOrdersAlerts(rawAlerts);
@@ -817,8 +818,15 @@ function renderHealthTable(stores, range) {
 }
 
 // ---------- Cancellations — who & why ----------
+//
+// "Cancelled by" (aggregator/merchant app) reflects which system executed
+// the cancellation, not whose fault it was — e.g. a restaurant marking an
+// item out of stock inside the Swiggy app still shows up as "cancelled by
+// Swiggy". `caused_by` (from build/cancellation_reasons.py) is derived from
+// the actual reason instead, so "Item out of stock" always reads as a
+// Restaurant-caused cancellation, never an aggregator one.
 
-const CANCELLED_BY_LABELS = { aggregator: 'Aggregator', merchant: 'Merchant', customer: 'Customer', unknown: 'Unknown' };
+const CAUSED_BY_ORDER = ['Restaurant', 'Customer', 'Platform', 'Delivery partner', 'Other', 'Unknown'];
 
 function cancellationsInRange(stores, range) {
   const rows = [];
@@ -848,37 +856,61 @@ function renderCancellationSummary(rows) {
     return;
   }
 
-  const byWhom = {};
-  for (const r of rows) byWhom[r.cancelled_by] = (byWhom[r.cancelled_by] || 0) + r.count;
+  const byCause = {};
+  for (const r of rows) byCause[r.caused_by] = (byCause[r.caused_by] || 0) + r.count;
 
-  for (const key of Object.keys(byWhom).sort((a, b) => byWhom[b] - byWhom[a])) {
-    const pct = (byWhom[key] / total) * 100;
+  const keys = Object.keys(byCause).sort((a, b) => {
+    const ai = CAUSED_BY_ORDER.indexOf(a), bi = CAUSED_BY_ORDER.indexOf(b);
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+  for (const key of keys) {
+    const pct = (byCause[key] / total) * 100;
     const c = kpiCard();
-    addKpiText(c, 'label', CANCELLED_BY_LABELS[key] || key);
+    addKpiText(c, 'label', `Caused by ${key}`);
     addKpiText(c, 'value', `${pct.toFixed(0)}%`);
-    addKpiText(c, 'sub', `${byWhom[key]} orders`);
+    addKpiText(c, 'sub', `${byCause[key]} orders`);
     el.appendChild(c);
   }
 }
 
-function buildReasonRows(rows) {
+function topReasonForStore(rows) {
   const total = rows.reduce((sum, r) => sum + r.count, 0);
-  const byKey = {};
-  for (const r of rows) {
-    const key = r.reason + '|' + r.cancelled_by;
-    (byKey[key] = byKey[key] || { reason: r.reason, cancelledBy: r.cancelled_by, count: 0 }).count += r.count;
-  }
-  return Object.values(byKey)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 15)
-    .map(r => ({ ...r, pct: total > 0 ? (r.count / total) * 100 : 0 }));
+  if (total === 0) return { reason: null, causedBy: null, pct: 0 };
+  const byReason = {};
+  for (const r of rows) byReason[r.reason] = (byReason[r.reason] || 0) + r.count;
+  const [reason, count] = Object.entries(byReason).sort((a, b) => b[1] - a[1])[0];
+  const causedBy = rows.find(r => r.reason === reason).caused_by;
+  return { reason, causedBy, pct: (count / total) * 100 };
+}
+
+function buildCancellationStoreRows(stores, range) {
+  return stores.map(s => {
+    const rows = s.cancellations.daily.filter(c => c.date >= range.start && c.date <= range.end);
+    const count = rows.reduce((sum, r) => sum + r.count, 0);
+    const computed = opsComputedInRange(s.ops_computed.daily, range.start, range.end);
+    const top = topReasonForStore(rows);
+    return {
+      city: s.city,
+      store: s.display_name,
+      count,
+      cancellationPct: computed.cancellationPct,
+      topReason: top.reason,
+      topReasonPct: top.pct,
+      causedBy: top.causedBy,
+    };
+  }).filter(r => r.count > 0);
 }
 
 const CANCELLATION_COLUMNS = [
-  { label: 'Reason', value: r => r.reason, display: r => r.reason, storeCell: true },
-  { label: 'Cancelled By', value: r => r.cancelledBy, display: r => CANCELLED_BY_LABELS[r.cancelledBy] || r.cancelledBy },
-  { label: 'Orders', value: r => r.count, numeric: true, display: r => String(r.count) },
-  { label: '% of Cancellations', value: r => r.pct, numeric: true, display: r => `${r.pct.toFixed(1)}%` },
+  { label: 'City', value: r => r.city, display: r => r.city },
+  { label: 'Store', value: r => r.store, display: r => r.store, storeCell: true },
+  { label: 'Cancelled Orders', value: r => r.count, numeric: true, display: r => String(r.count) },
+  {
+    label: 'Cancellation %', value: r => r.cancellationPct, numeric: true,
+    render: (cell, r) => cell.appendChild(metricChip(r.cancellationPct !== null ? r.cancellationPct.toFixed(1) : null, 'maxCancel', r.cancellationPct !== null ? '%' : '')),
+  },
+  { label: 'Top Reason', value: r => r.topReasonPct, numeric: true, display: r => r.topReason ? `${r.topReason} (${r.topReasonPct.toFixed(0)}%)` : '-' },
+  { label: 'Caused By', value: r => r.causedBy, display: r => r.causedBy || '-' },
 ];
 
 const cancellationSortState = { col: 2, dir: -1 };
@@ -890,7 +922,7 @@ function renderCancellationTable(rows) {
 function renderCancellationSection(stores, range) {
   const rows = cancellationsInRange(stores, range);
   renderCancellationSummary(rows);
-  renderCancellationTable(buildReasonRows(rows));
+  renderCancellationTable(buildCancellationStoreRows(stores, range));
 }
 
 // ---------- Discounts — merchant vs aggregator funded ----------

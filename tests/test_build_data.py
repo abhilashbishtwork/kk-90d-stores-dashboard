@@ -245,7 +245,7 @@ def test_run_wires_cancellation_detail_rows_into_the_payload(tmp_path, monkeypat
     ravet = json.loads(fake_path.read_text())["stores"][0]
     assert ravet["cancellations"]["daily"] == [{
         "date": "2026-08-17", "channel": "swiggy", "cancelled_by": "merchant",
-        "reason": "Store busy", "count": 2,
+        "reason": "Store busy", "caused_by": "Restaurant", "count": 2,
     }]
 
 

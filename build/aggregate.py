@@ -10,7 +10,7 @@ from datetime import timedelta
 
 from build.cities import city_for, display_name_for
 from build.ratings_snapshot import ratings_for, SNAPSHOT_DATE as RATINGS_SNAPSHOT_DATE
-from build.cancellation_reasons import normalize_reason
+from build.cancellation_reasons import normalize_reason, caused_by_for_reason
 
 
 def _empty_channel_totals():
@@ -96,6 +96,7 @@ def build_dashboard_payload(roster, revenue_rows, offline_revenue_rows, ops_rows
             "channel": r["channel"],
             "cancelled_by": r["cancelled_by"] or "unknown",
             "reason": reason,
+            "caused_by": caused_by_for_reason(reason),
             "count": int(r["cancelled_orders"]),
         })
 
