@@ -17,12 +17,12 @@ const GOOD = {
 };
 
 const ALERT_SEVERITY = {
-  zero_revenue: 'crit',
+  zero_orders: 'crit',
   cancellation_high: 'crit',
   kpt_high: 'warn',
   low_online_opd: 'warn',
-  zero_swiggy_revenue: 'warn',
-  zero_zomato_revenue: 'warn',
+  zero_swiggy_orders: 'warn',
+  zero_zomato_orders: 'warn',
 };
 
 // ---------- date helpers ----------
@@ -294,16 +294,16 @@ function renderKpis(k) {
 // ---------- alerts ----------
 
 const ALERT_GROUP_LABELS = {
-  zero_revenue: 'Zero Revenue',
-  zero_swiggy_revenue: 'Zero Revenue — Swiggy',
-  zero_zomato_revenue: 'Zero Revenue — Zomato',
+  zero_orders: 'Zero Orders',
+  zero_swiggy_orders: 'Zero Orders — Swiggy',
+  zero_zomato_orders: 'Zero Orders — Zomato',
   cancellation_high: 'Cancellations',
   kpt_high: 'Slow KPT',
   low_online_opd: 'Low Online Orders',
 };
 
 const ALERT_GROUP_ORDER = [
-  'Zero Revenue', 'Zero Revenue — Swiggy', 'Zero Revenue — Zomato',
+  'Zero Orders', 'Zero Orders — Swiggy', 'Zero Orders — Zomato',
   'Cancellations', 'Slow KPT', 'Low Online Orders',
 ];
 

@@ -7,18 +7,23 @@ function computeAlerts(stores, thresholds, todayStr) {
     if (store.launch_date && store.launch_date <= todayStr) {
       const todayEntry = store.revenue.daily.find(d => d.date === todayStr);
       const hasAnyHistory = store.revenue.daily.some(d => d.date < todayStr);
-      if (hasAnyHistory && (!todayEntry || todayEntry.total === 0)) {
-        alerts.push({ store: store.display_name, type: 'zero_revenue', value: '₹0', detail: `No revenue recorded for ${todayStr}` });
+      // Orders, not revenue: zero orders always means zero revenue, but
+      // the reverse isn't reliable (a fully-discounted order can show
+      // ₹0 revenue while still being a real order) — orders is the
+      // sharper "did anything actually happen" signal.
+      const todayTotalOrders = todayEntry ? todayEntry.online_orders + todayEntry.dine_in_orders : 0;
+      if (hasAnyHistory && (!todayEntry || todayTotalOrders === 0)) {
+        alerts.push({ store: store.display_name, type: 'zero_orders', value: '0 orders', detail: `No orders recorded for ${todayStr}` });
       }
 
-      const hasSwiggyHistory = store.revenue.daily.some(d => d.date < todayStr && d.online.swiggy > 0);
-      if (hasSwiggyHistory && (!todayEntry || todayEntry.online.swiggy === 0)) {
-        alerts.push({ store: store.display_name, type: 'zero_swiggy_revenue', value: '₹0', detail: `No Swiggy revenue recorded for ${todayStr}` });
+      const hasSwiggyHistory = store.revenue.daily.some(d => d.date < todayStr && d.orders_by_channel.swiggy > 0);
+      if (hasSwiggyHistory && (!todayEntry || todayEntry.orders_by_channel.swiggy === 0)) {
+        alerts.push({ store: store.display_name, type: 'zero_swiggy_orders', value: '0 orders', detail: `No Swiggy orders recorded for ${todayStr}` });
       }
 
-      const hasZomatoHistory = store.revenue.daily.some(d => d.date < todayStr && d.online.zomato > 0);
-      if (hasZomatoHistory && (!todayEntry || todayEntry.online.zomato === 0)) {
-        alerts.push({ store: store.display_name, type: 'zero_zomato_revenue', value: '₹0', detail: `No Zomato revenue recorded for ${todayStr}` });
+      const hasZomatoHistory = store.revenue.daily.some(d => d.date < todayStr && d.orders_by_channel.zomato > 0);
+      if (hasZomatoHistory && (!todayEntry || todayEntry.orders_by_channel.zomato === 0)) {
+        alerts.push({ store: store.display_name, type: 'zero_zomato_orders', value: '0 orders', detail: `No Zomato orders recorded for ${todayStr}` });
       }
 
       if (todayEntry && todayEntry.online_orders < thresholds.min_online_opd) {
