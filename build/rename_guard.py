@@ -125,6 +125,15 @@ def resolve_new_stores(history_rows, window_start, manual_excludes=frozenset()):
     return results
 
 
+def _matching_known_name(store_name, known_names):
+    if store_name in known_names:
+        return store_name
+    for known in known_names:
+        if _name_signature_match(store_name, known):
+            return known
+    return None
+
+
 def filter_unknown_places(history_rows, known_names):
     """Drop any row that is the same physical place (exactly or by name
     signature) as one of `known_names`.
@@ -141,8 +150,25 @@ def filter_unknown_places(history_rows, known_names):
     *known* (online) universe — it does not resolve offline-only
     rename chains itself.
     """
-    return [
-        row for row in history_rows
-        if row["store_name"] not in known_names
-        and not any(_name_signature_match(row["store_name"], known) for known in known_names)
-    ]
+    return [row for row in history_rows if _matching_known_name(row["store_name"], known_names) is None]
+
+
+def match_known_places(history_rows, known_names):
+    """The complement of `filter_unknown_places`: for every row that IS
+    the same physical place as one of `known_names`, return
+    {row_store_name: matched_known_name}.
+
+    Dropping a POS-suffixed variant as a duplicate (filter_unknown_places)
+    must not be a dead end — the caller needs to know *which* known store
+    it belongs to, so that name can be wired in as an alias and its
+    offline/POS revenue actually gets pulled. Without this, a store with
+    both a substantial online history and a differently-suffixed POS
+    name would correctly avoid a phantom duplicate roster entry, but its
+    POS revenue would then silently never be queried at all.
+    """
+    result = {}
+    for row in history_rows:
+        match = _matching_known_name(row["store_name"], known_names)
+        if match is not None:
+            result[row["store_name"]] = match
+    return result

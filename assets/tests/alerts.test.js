@@ -86,13 +86,24 @@ test('computeAlerts does not flag zero Zomato orders when the store never had a 
   assert.strictEqual(alerts.some(a => a.type === 'zero_zomato_orders'), false);
 });
 
-test('computeAlerts flags low online orders-per-day for the most recent day', () => {
+test('computeAlerts flags zero online orders-per-day for the most recent day', () => {
   const stores = [{
     display_name: 'Kothrud', launch_date: '2026-07-07',
-    revenue: { daily: [dayEntry('2026-08-19', { swiggy: 1 })] },
+    revenue: { daily: [dayEntry('2026-08-19', { swiggy: 0 })] },
   }];
   const alerts = computeAlerts(stores, THRESHOLDS, '2026-08-19');
   assert.ok(alerts.some(a => a.type === 'low_online_opd'));
+});
+
+test('computeAlerts does not flag a low-but-nonzero online order count (zero is the sharper signal)', () => {
+  // Real case: Dhanori had 2 online orders on the day — not a real
+  // issue worth surfacing, per explicit user feedback (2026-08-24).
+  const stores = [{
+    display_name: 'Dhanori', launch_date: '2026-07-07',
+    revenue: { daily: [dayEntry('2026-08-19', { swiggy: 2 })] },
+  }];
+  const alerts = computeAlerts(stores, THRESHOLDS, '2026-08-19');
+  assert.strictEqual(alerts.some(a => a.type === 'low_online_opd'), false);
 });
 
 test('computeAlerts flags high cancellation for the most recent day', () => {

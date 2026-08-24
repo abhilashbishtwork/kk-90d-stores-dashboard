@@ -26,8 +26,12 @@ function computeAlerts(stores, thresholds, todayStr) {
         alerts.push({ store: store.display_name, type: 'zero_zomato_orders', value: '0 orders', detail: `No Zomato orders recorded for ${todayStr}` });
       }
 
-      if (todayEntry && todayEntry.online_orders < thresholds.min_online_opd) {
-        alerts.push({ store: store.display_name, type: 'low_online_opd', value: String(todayEntry.online_orders), detail: `Only ${todayEntry.online_orders} online orders on ${todayStr} (< ${thresholds.min_online_opd})` });
+      // Zero, not "low": a low-but-nonzero count (e.g. 2 orders) isn't a
+      // real issue and was flagged as noise (Dhanori, 2026-08-24) — zero
+      // is the sharper, unambiguous signal, same reasoning already
+      // applied to the zero-orders alert above.
+      if (todayEntry && todayEntry.online_orders === 0) {
+        alerts.push({ store: store.display_name, type: 'low_online_opd', value: String(todayEntry.online_orders), detail: `No online orders on ${todayStr}` });
       }
     }
 

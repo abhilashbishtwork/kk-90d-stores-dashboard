@@ -19,7 +19,7 @@ from build.queries import (
     build_cancellation_detail_query,
     build_discount_detail_query,
 )
-from build.rename_guard import resolve_new_stores, filter_unknown_places
+from build.rename_guard import resolve_new_stores, filter_unknown_places, match_known_places
 from build.roster_overrides import MANUAL_EXCLUDE_STORE_NAMES, MANUAL_ALIAS_OVERRIDES, MANUAL_ADDITIONAL_STORES
 from build.clickhouse_client import run_query
 from build.aggregate import build_dashboard_payload
@@ -81,6 +81,20 @@ def run(query_runner, today, previous_store_count):
         target = roster_by_name.get(target_name)
         if target is not None:
             target["aliases"].append(alias_name)
+
+    # A POS-suffixed (or otherwise differently-named) offline counterpart
+    # of an already-tracked online store was correctly excluded above as
+    # a duplicate, not a new store — but that dedup must not be a dead
+    # end: without wiring it in as an alias here, its offline/POS revenue
+    # would never be queried at all (real bug, 2026-08-24: Tribeca,
+    # Amanora, CP 67 Mall, Omaxe Chandni Chowk, Elan Miracle and SB
+    # Sarjapura all showed zero dine-in revenue for exactly this reason).
+    alias_to_canonical = {alias: s["store_name"] for s in roster for alias in s["aliases"]}
+    for pos_name, matched_known_name in match_known_places(any_channel_history_rows, known_names).items():
+        canonical = alias_to_canonical.get(matched_known_name)
+        target = roster_by_name.get(canonical) if canonical else None
+        if target is not None and pos_name not in target["aliases"]:
+            target["aliases"].append(pos_name)
 
     # Fully manually-asserted entries (a relocation with no
     # ClickHouse-detectable signal at all) — copy the aliases list so

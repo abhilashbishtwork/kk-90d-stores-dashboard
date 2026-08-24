@@ -65,8 +65,15 @@ MANUAL_ADDITIONAL_STORES = [
         # 2025-01-29, same store_name before and after — the old
         # smaller store's history predates 2026-08-13 and is excluded
         # by the launch_date floor).
+        # "BLR KK MANTRI MALL POS" (dine-in, continuously active since
+        # 2025-02-16) is this same store's offline counterpart — added
+        # 2026-08-24 after the user flagged missing offline data. Its
+        # remaining tokens ({"mantri","mall"}) don't signature-match
+        # "BLR KK Mantri Online" ({"mantri"}) automatically — same class
+        # of blind spot as PNQ KK FB Baner Pos, real not a bug to chase —
+        # so it needs a manual alias here, same as the online listing did.
         "store_name": "BLR KK Mantri Mall",
         "launch_date": "2026-08-13",
-        "aliases": ["BLR KK Mantri Online"],
+        "aliases": ["BLR KK Mantri Online", "BLR KK MANTRI MALL POS"],
     },
 ]

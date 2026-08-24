@@ -1,4 +1,4 @@
-from build.rename_guard import resolve_new_stores, filter_unknown_places
+from build.rename_guard import resolve_new_stores, filter_unknown_places, match_known_places
 
 WINDOW_START = "2026-05-23"
 
@@ -108,3 +108,27 @@ def test_filter_unknown_places_keeps_a_different_single_token_place_in_the_same_
     history = [{"store_name": "IXC KK Mohali Walk", "first_seen": "2026-07-19", "last_seen": "2026-08-20"}]
     result = filter_unknown_places(history, known_names={"IXC KK Kharar - Kripsy Kreme - NCR"})
     assert result == history
+
+
+def test_match_known_places_is_the_complement_of_filter_unknown_places():
+    # A POS-suffixed variant of an already-tracked online store is
+    # dropped by filter_unknown_places (correctly — it's not a new,
+    # offline-only store) but that dedup must not be a dead end: the
+    # match itself needs to be returned so the caller can wire the POS
+    # name in as an alias of the online store it belongs to, or that
+    # store's offline revenue silently goes untracked.
+    history = [{"store_name": "DEL KK Omaxe Chandni Chowk Pos", "first_seen": "2026-07-19", "last_seen": "2026-08-20"}]
+    result = match_known_places(history, known_names={"DEL KK Omaxe Chandni Chowk"})
+    assert result == {"DEL KK Omaxe Chandni Chowk Pos": "DEL KK Omaxe Chandni Chowk"}
+
+
+def test_match_known_places_returns_exact_match_as_itself():
+    history = [{"store_name": "PNQ KK Ravet", "first_seen": "2026-07-17", "last_seen": "2026-08-20"}]
+    result = match_known_places(history, known_names={"PNQ KK Ravet"})
+    assert result == {"PNQ KK Ravet": "PNQ KK Ravet"}
+
+
+def test_match_known_places_omits_genuinely_unrelated_stores():
+    history = [{"store_name": "PNQ KK Elpro Mall", "first_seen": "2026-08-20", "last_seen": "2026-08-20"}]
+    result = match_known_places(history, known_names={"PNQ KK Ravet"})
+    assert result == {}

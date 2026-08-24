@@ -4,7 +4,7 @@
 const THRESHOLDS = {
   cancellation_alert_pct: 5,  // computed cancellation > 5% is flagged
   kpt_p80_max_minutes: 10,    // computed KPT P80 > 10 min is flagged
-  min_online_opd: 3,          // online orders/day < 3 is flagged (new stores ramp up)
+  min_online_opd: 0,          // online orders/day === 0 is flagged; low-but-nonzero isn't a real issue
 };
 
 const GOOD = {
@@ -729,20 +729,18 @@ const DETAIL_COLUMNS = [
   { label: 'Online', value: r => r.opdOnline, numeric: true, render: (cell, r) => opdCell(cell, r.opdOnline) },
   { label: 'Swiggy', value: r => r.opdSwiggy, numeric: true, render: (cell, r) => opdCell(cell, r.opdSwiggy) },
   { label: 'Zomato', value: r => r.opdZomato, numeric: true, render: (cell, r) => opdCell(cell, r.opdZomato) },
-  { label: 'Ownly', value: r => r.opdOwnly, numeric: true, render: (cell, r) => opdCell(cell, r.opdOwnly) },
   // ---- Revenue group ----
   { label: 'Total', value: r => r.revTotal, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revTotal) },
   { label: 'Offline', value: r => r.revOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => revPerDayCell(cell, r.revOffline)) },
   { label: 'Online', value: r => r.revOnline, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revOnline) },
   { label: 'Swiggy', value: r => r.revSwiggy, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revSwiggy) },
   { label: 'Zomato', value: r => r.revZomato, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revZomato) },
-  { label: 'Ownly', value: r => r.revOwnly, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revOwnly) },
 ];
 
 const DETAIL_COLUMN_GROUPS = [
   { label: '', span: 4 },
-  { label: 'OPD', span: 6 },
-  { label: 'Revenue (₹k/day)', span: 6 },
+  { label: 'OPD', span: 5 },
+  { label: 'Revenue (₹k/day)', span: 5 },
 ];
 
 const detailSortState = { col: 3, dir: 1 };

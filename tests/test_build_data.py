@@ -146,6 +146,39 @@ def test_run_rolls_up_the_alias_overridden_stores_pos_revenue_into_the_target(tm
     assert baner["revenue"]["lifetime"]["dine_in"] == 500.0
 
 
+def test_run_wires_a_signature_matched_pos_name_in_as_an_alias_for_its_offline_revenue(tmp_path, monkeypatch):
+    # Real bug (2026-08-24): "PNQ KK Tribeca Pos" signature-matches the
+    # already-tracked online "PNQ KK Tribeca" and is correctly dropped by
+    # filter_unknown_places as a duplicate — but that dedup was a dead
+    # end: nothing then added "PNQ KK Tribeca Pos" as an alias of the
+    # online entry, so its POS revenue was never queried at all. Unlike
+    # the FB Baner case above, this needs no manual override — the name
+    # match is automatic; the alias wiring must be too.
+    fake_path = tmp_path / "data.json"
+    monkeypatch.setattr("build.build_data.DATA_JSON_PATH", str(fake_path))
+    monkeypatch.setattr("build.build_data.MANUAL_ADDITIONAL_STORES", [])
+
+    online_history_rows = [
+        {"store_name": "PNQ KK Tribeca", "first_seen": "2026-06-27", "last_seen": "2026-08-20"},
+    ]
+    any_channel_history_rows = online_history_rows + [
+        {"store_name": "PNQ KK Tribeca Pos", "first_seen": "2026-06-27", "last_seen": "2026-08-20"},
+    ]
+    offline_revenue_rows = [
+        {"order_date": "2026-08-17", "store_name": "PNQ KK Tribeca Pos", "revenue": "500", "order_count": "4"},
+    ]
+    runner = _fake_runner(online_history_rows, [], [], any_channel_history_rows, offline_revenue_rows)
+
+    result = run(runner, date(2026, 8, 21), previous_store_count=None)
+
+    assert result is True
+    written = json.loads(fake_path.read_text())
+    names = [s["store_name"] for s in written["stores"]]
+    assert names == ["PNQ KK Tribeca"]
+    tribeca = written["stores"][0]
+    assert tribeca["revenue"]["lifetime"]["dine_in"] == 500.0
+
+
 def test_run_excludes_a_store_gone_silent_for_weeks(tmp_path, monkeypatch):
     # Real case: "BLR BIAL SHA POS" took 3 orders over 4 days in early
     # June, then nothing since — an abandoned/test kiosk, not a store
