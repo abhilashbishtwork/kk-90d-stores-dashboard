@@ -12,6 +12,17 @@ MANUAL_EXCLUDE_STORE_NAMES = {
     # same-day artifact rows documented in
     # [[project_krispy_kreme_online_dashboard]].
     "GGN KK ODC GGN",
+
+    # "IXC KK CP 67 Mall" (bare) is a near-empty (2 orders across 3
+    # months, 2026-05-27 to 2026-08-24) sporadic duplicate of the real,
+    # thousands-of-orders "IXC KK CP 67 Mall - Kripsy Kreme - NCR"
+    # listing — a data-quirk trickle under a shortened name variant, not
+    # a real second store. Doesn't merge automatically via rename-chain
+    # detection because both names are active *simultaneously*
+    # throughout the window (no sequential predecessor→successor gap),
+    # which resolve_new_stores doesn't model — found 2026-08-24 while
+    # investigating the missing-offline-revenue bug.
+    "IXC KK CP 67 Mall",
 }
 
 # Cross-channel alias merges: `key` is a store_name that should NOT be

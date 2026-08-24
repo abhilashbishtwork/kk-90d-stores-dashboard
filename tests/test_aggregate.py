@@ -166,10 +166,10 @@ def test_ratings_attached_for_a_known_display_name():
     roster = [{"store_name": "PNQ KK Tribeca", "launch_date": "2026-06-27", "aliases": ["PNQ KK Tribeca"]}]
     payload = build_dashboard_payload(roster, [], [], [], [], [], date(2026, 8, 18))
     ratings = payload["stores"][0]["ratings"]
-    assert ratings["swiggy"]["rating"] == 4.6
+    assert ratings["swiggy"]["rating"] == 4.5
     assert ratings["zomato"]["rating"] == 4.3
     assert ratings["google"]["rating"] is None
-    assert ratings["as_of"] == "2026-08-19"
+    assert ratings["as_of"] == "2026-08-24"
 
 
 def test_ratings_missing_for_an_unmatched_store_are_null():
