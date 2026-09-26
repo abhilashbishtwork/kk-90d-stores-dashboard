@@ -5,93 +5,107 @@
 <meta charset="utf-8">
 <style>
   :root {
-    --green: #0a6b3f; --green-bg: #e3f3ea; --green-line: #9fd3b6;
-    --ink: #1c1c1c; --muted: #707070; --line: #e3e3e3; --bg: #f7f6f3; --chip: #eeeeee; --red: #c8102e;
+    --green: #0a6b3f; --green-bg: #e6f4ec; --row-done: #d9efe2;
+    --ink: #1c1c1c; --muted: #767676; --line: #e4e4e4; --bg: #f7f6f3; --red: #c8102e;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; font: 13px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
-  .wrap { padding: 10px; }
-  .bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
-  .pill { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 11px; cursor: pointer; font-size: 12px; }
+  body { margin: 0; font: 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { padding: 8px 10px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+  .pill { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 3px 10px; cursor: pointer; font-size: 12px; }
   .pill.on { background: var(--green); border-color: var(--green); color: #fff; }
-  .pill b { font-weight: 700; margin-left: 3px; }
+  .pill b { margin-left: 3px; }
   .spacer { flex: 1; }
-  button.primary { background: var(--green); color: #fff; border: 0; border-radius: 8px; padding: 6px 12px; font-weight: 600; cursor: pointer; font-size: 12px; }
-  input, select { border: 1px solid var(--line); border-radius: 7px; padding: 5px 7px; font: inherit; background: #fff; }
-  #q { width: 150px; }
-  #add-form { display: none; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-bottom: 10px; gap: 6px; flex-wrap: wrap; align-items: center; }
-  #add-form.open { display: flex; }
+  input, select { border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; font: inherit; background: #fff; color: var(--ink); }
+  #q { width: 160px; }
+  #add { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; }
+  #add .lbl { font-weight: 700; font-size: 12px; margin-right: 2px; }
+  #f-name { width: 220px; }
+  button.primary { background: var(--green); color: #fff; border: 0; border-radius: 6px; padding: 5px 14px; font-weight: 600; cursor: pointer; }
 
-  .store { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; }
-  .store.done { border-color: var(--green-line); }
-  .head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
-  .name { font-weight: 700; font-size: 14px; }
-  .meta { color: var(--muted); font-size: 11px; }
-  .type { font-size: 11px; padding: 1px 3px; border-radius: 5px; color: var(--muted); max-width: 150px; }
-  .count { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--muted); }
-  .store.done .count { color: var(--green); }
-  .link { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 11px; text-decoration: underline; padding: 0; }
+  .scroll { overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1270px; table-layout: fixed; }
+  th, td { border-bottom: 1px solid var(--line); padding: 3px 2px; text-align: center; white-space: nowrap; overflow: hidden; }
+  thead th { background: #fafafa; font-size: 10.5px; color: var(--muted); font-weight: 600; }
+  thead tr.g th { font-size: 11.5px; color: var(--ink); font-weight: 700; border-bottom: 0; padding-top: 5px; }
+  .gs { border-left: 1px solid var(--line); }
+  th.l, td.l { text-align: left; padding-left: 8px; }
+  td.name { font-weight: 700; text-overflow: ellipsis; position: sticky; left: 0; background: inherit; z-index: 1; }
+  th.name { position: sticky; left: 0; z-index: 2; }
+  tbody tr { background: #fff; }
+  tbody tr:hover { background: #fbfbf8; }
+  tbody tr.done, tbody tr.done:hover { background: var(--row-done); }
+  td.gdone { background: var(--green-bg); }
+  tbody tr.done td.gdone { background: transparent; }
+  td select, td input.date { border-color: transparent; background: transparent; padding: 2px 3px; font-size: 12px; width: 100%; color: var(--muted); }
+  td select:hover, td input.date:hover { border-color: var(--line); }
+  .x { background: none; border: 0; color: #aaa; cursor: pointer; font-size: 11px; padding: 0 4px; }
+  .x:hover { color: var(--red); text-decoration: underline; }
 
-  .groups { display: flex; flex-wrap: wrap; gap: 6px; }
-  .grp { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fafafa; }
-  .grp.complete { background: var(--green-bg); border-color: var(--green-line); }
-  .glabel { display: flex; align-items: center; padding: 0 8px; font-weight: 700; font-size: 11px; border-right: 1px solid var(--line); min-width: 58px; }
-  .grp.complete .glabel { color: var(--green); border-right-color: var(--green-line); }
-  .steps { display: flex; gap: 4px; padding: 4px; align-items: center; }
-  .step { border: 0; border-radius: 6px; padding: 5px 8px; font-size: 11px; font-weight: 600; background: var(--chip); color: #8a8a8a; cursor: pointer; white-space: nowrap; }
-  .step.on { background: var(--green); color: #fff; }
-  .step:disabled { opacity: .45; cursor: not-allowed; }
-  .step.on:disabled { opacity: 1; cursor: default; }
-  .rid { width: 92px; padding: 4px 6px; font-size: 11px; border-radius: 6px; }
-  .rid.filled { border-color: var(--green-line); background: #fff; color: var(--green); font-weight: 600; }
-  .rid:disabled { background: #f1f1f1; }
+  .tick { width: 24px; height: 24px; border-radius: 6px; border: 1.5px solid #cfcfcf; background: #fff; cursor: pointer; padding: 0;
+          font-size: 14px; line-height: 21px; color: transparent; font-weight: 700; }
+  .tick:hover:not(:disabled) { border-color: var(--green); }
+  .tick.on { background: var(--green); border-color: var(--green); color: #fff; }
+  .tick:disabled:not(.on) { opacity: .35; cursor: not-allowed; }
+  .tick.on:disabled { cursor: default; }
+  .na { color: #c4c4c4; font-size: 11px; }
+  .rid { width: 100%; max-width: 92px; padding: 3px 5px; font-size: 11.5px; }
+  .rid.filled { color: var(--green); font-weight: 600; border-color: #9fd3b6; }
+  .rid:disabled { background: #f3f3f3; }
+  .prog { font-size: 11px; font-weight: 700; color: var(--muted); }
+  tr.done .prog { color: var(--green); }
 
-  #toast { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 12px; display: none; }
-  #toast.err { background: var(--red); }
-  .empty { padding: 26px; text-align: center; color: var(--muted); background: #fff; border: 1px dashed var(--line); border-radius: 10px; }
-  #loading { color: var(--muted); padding: 10px 0; }
+  #toast { position: fixed; bottom: 10px; right: 12px; background: var(--red); color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 12px; display: none; }
+  #sync { font-size: 11px; color: var(--muted); }
+  .empty { padding: 22px; text-align: center; color: var(--muted); }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <form id="add" autocomplete="off">
+    <span class="lbl">New store</span>
+    <input type="text" id="f-name" placeholder="Store name" required maxlength="120">
+    <select id="f-type"></select>
+    <select id="f-city" required><option value="">City…</option></select>
+    <input type="date" id="f-date" title="Go-live date">
+    <button class="primary" type="submit">Add</button>
+    <span class="spacer"></span>
+    <span id="sync"></span>
+  </form>
+
   <div class="bar">
     <span id="status-bar"></span>
     <span id="city-bar"></span>
-    <input type="search" id="q" placeholder="Search store">
     <span class="spacer"></span>
-    <button class="primary" id="add-toggle">+ Add store</button>
+    <input type="search" id="q" placeholder="Search store">
   </div>
 
-  <form id="add-form">
-    <input type="text" id="f-name" placeholder="Store name" required maxlength="120" style="min-width:220px">
-    <input type="text" id="f-city" placeholder="City" maxlength="60" list="city-list">
-    <datalist id="city-list"></datalist>
-    <select id="f-type"></select>
-    <label class="meta">Go-live <input type="date" id="f-date"></label>
-    <button class="primary" type="submit">Add</button>
-    <button class="link" type="button" id="add-cancel">Cancel</button>
-  </form>
-
-  <div id="loading">Loading…</div>
-  <div id="list"></div>
+  <div class="scroll"><table id="t"><colgroup id="cols"></colgroup><thead></thead><tbody></tbody></table></div>
 </div>
 <div id="toast"></div>
 
 <script>
-// Steps inside a group unlock in order; a group turns green once every step
-// (and its RID, where it has one) is filled.
+// Every click updates the screen immediately; writes go to the Sheet through a
+// one-at-a-time queue in the background. A failed write reloads the true state.
+const CLOUD = 'Delivery / Cloud Kitchen';
+const OWNLY_CITIES = ['Bengaluru', 'Hyderabad'];
+const fssaiDone = r => !!(r.fssai_ack && r.fssai_licence);
+// Listings (and District/Dineout) can't start until the FSSAI licence is in;
+// Google doesn't need it. Unused v1 "FSSAI pending" columns stay in the Sheet.
 const GROUPS = [
-  { label: 'FSSAI', steps: [['fssai_ack', 'Acknowledgement'], ['fssai_licence', 'Licence']] },
-  { label: 'Swiggy', steps: [['swiggy_fssai_pending', 'FSSAI pending'], ['swiggy_request', 'Request raised'], ['swiggy_live', 'Listing live']], rid: 'swiggy_rid' },
-  { label: 'Zomato', steps: [['zomato_fssai_pending', 'FSSAI pending'], ['zomato_request', 'Request raised'], ['zomato_live', 'Listing live']], rid: 'zomato_rid' },
-  { label: 'Ownly', steps: [['ownly_fssai_pending', 'FSSAI pending'], ['ownly_request', 'Request raised'], ['ownly_live', 'Listing live']], rid: 'ownly_rid' },
-  { label: 'District', steps: [['zomato_district', 'Live']] },
-  { label: 'Dineout', steps: [['swiggy_dineout', 'Live']] },
-  { label: 'Google', steps: [['google_listing', 'Live']] },
+  { label: 'FSSAI', steps: [['fssai_ack', 'Ack'], ['fssai_licence', 'Licence']] },
+  { label: 'Swiggy', steps: [['swiggy_request', 'Raised'], ['swiggy_live', 'Live']], rid: 'swiggy_rid', gate: fssaiDone },
+  { label: 'Zomato', steps: [['zomato_request', 'Raised'], ['zomato_live', 'Live']], rid: 'zomato_rid', gate: fssaiDone },
+  { label: 'Ownly', steps: [['ownly_request', 'Raised'], ['ownly_live', 'Live']], rid: 'ownly_rid', gate: fssaiDone,
+    applies: r => OWNLY_CITIES.indexOf(r.city) >= 0 },
+  { label: 'District', steps: [['zomato_district', 'Live']], gate: fssaiDone, applies: r => r.type !== CLOUD },
+  { label: 'Dineout', steps: [['swiggy_dineout', 'Live']], gate: fssaiDone, applies: r => r.type !== CLOUD },
+  { label: 'Google', steps: [['google_listing', 'Live']], applies: r => r.type !== CLOUD },
 ];
-const TOTAL = GROUPS.reduce((n, g) => n + g.steps.length + (g.rid ? 1 : 0), 0);
 const ui = { city: 'All', status: 'Pending', q: '' };
 let state = null;
+const queue = [];
+let inFlight = false;
 
 function el(tag, props, kids) {
   const n = document.createElement(tag);
@@ -99,20 +113,46 @@ function el(tag, props, kids) {
   (kids || []).forEach(k => n.appendChild(typeof k === 'string' ? document.createTextNode(k) : k));
   return n;
 }
-function toast(msg, isErr) {
+function toast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = isErr ? 'err' : ''; t.style.display = 'block';
-  clearTimeout(toast._t); toast._t = setTimeout(() => { t.style.display = 'none'; }, isErr ? 5000 : 1200);
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast._t); toast._t = setTimeout(() => { t.style.display = 'none'; }, 5000);
 }
-function call(fn, args, onOk) {
+function syncLabel() {
+  document.getElementById('sync').textContent = queue.length || inFlight ? 'Saving…' : 'All changes saved';
+}
+
+function enqueue(fn, args) { queue.push({ fn, args }); syncLabel(); pump(); }
+function pump() {
+  if (inFlight || !queue.length) return;
+  const job = queue.shift();
+  inFlight = true;
   google.script.run
-    .withSuccessHandler(s => { if (!s) { toast('Empty response — reload', true); return; } state = s; render(); if (onOk) onOk(); })
-    .withFailureHandler(e => { toast('Not saved: ' + (e && e.message || e), true); render(); })[fn](...args);
+    .withSuccessHandler(s => {
+      inFlight = false;
+      // Only adopt the server copy once nothing local is still pending,
+      // otherwise it would briefly undo clicks that haven't been sent yet.
+      if (s && !queue.length) { state = s; render(); }
+      syncLabel(); pump();
+    })
+    .withFailureHandler(e => {
+      inFlight = false; queue.length = 0;
+      toast('Couldn\'t save: ' + (e && e.message || e) + ' — reloaded latest.');
+      load(); syncLabel();
+    })[job.fn](...job.args);
 }
+function setLocal(r, field, value) {
+  r[field] = value;
+  render();
+  enqueue('setField', [r.key, field, value]);
+}
+
+function groups(r) { return GROUPS.filter(g => !g.applies || g.applies(r)); }
 function hasRid(r, g) { return !!g.rid && String(r[g.rid] || '').trim() !== ''; }
 function groupDone(r, g) { return g.steps.every(([f]) => r[f]) && (!g.rid || hasRid(r, g)); }
-function doneCount(r) { return GROUPS.reduce((n, g) => n + g.steps.filter(([f]) => r[f]).length + (hasRid(r, g) ? 1 : 0), 0); }
-function isDone(r) { return doneCount(r) === TOTAL; }
+function total(r) { return groups(r).reduce((n, g) => n + g.steps.length + (g.rid ? 1 : 0), 0); }
+function doneCount(r) { return groups(r).reduce((n, g) => n + g.steps.filter(([f]) => r[f]).length + (hasRid(r, g) ? 1 : 0), 0); }
+function isDone(r) { return doneCount(r) === total(r); }
 
 function visible() {
   const q = ui.q.toLowerCase();
@@ -120,10 +160,9 @@ function visible() {
     if (r.archived) return false;
     if (ui.status === 'Pending' && isDone(r)) return false;
     if (ui.status === 'Done' && !isDone(r)) return false;
-    if (ui.city !== 'All' && (r.city || '—') !== ui.city) return false;
-    if (q && String(r.store_name).toLowerCase().indexOf(q) < 0) return false;
-    return true;
-  }).sort((a, b) => doneCount(a) - doneCount(b) || String(b.launch_date).localeCompare(String(a.launch_date)));
+    if (ui.city !== 'All' && r.city !== ui.city) return false;
+    return !q || String(r.store_name).toLowerCase().indexOf(q) >= 0;
+  }).sort((a, b) => String(b.key).localeCompare(String(a.key)));
 }
 
 function pills(container, options, current, onPick) {
@@ -136,101 +175,142 @@ function pills(container, options, current, onPick) {
   });
 }
 
-function stepButton(r, g, i) {
+function options(sel, list, current) {
+  if (current && list.indexOf(current) < 0) list = [current].concat(list);
+  list.forEach(v => sel.appendChild(el('option', { value: v, textContent: v, selected: v === current })));
+  return sel;
+}
+
+function renderHead() {
+  const cols = document.getElementById('cols'); cols.textContent = '';
+  const widths = [170, 116, 104, 104, 24];
+  widths.forEach(w => { const c = el('col'); c.style.width = w + 'px'; cols.appendChild(c); });
+  GROUPS.forEach(g => {
+    g.steps.forEach(() => { const c = el('col'); c.style.width = '44px'; cols.appendChild(c); });
+    if (g.rid) { const c = el('col'); c.style.width = '76px'; cols.appendChild(c); }
+  });
+  const pc = el('col'); pc.style.width = '44px'; cols.appendChild(pc);
+
+  const thead = document.querySelector('#t thead'); thead.textContent = '';
+  const g = el('tr', { className: 'g' }, [el('th', { colSpan: 5 })]);
+  const c = el('tr', {}, [
+    el('th', { className: 'l name', textContent: 'Store' }), el('th', { className: 'l', textContent: 'Type' }),
+    el('th', { className: 'l', textContent: 'City' }), el('th', { className: 'l', textContent: 'Go-live' }), el('th'),
+  ]);
+  GROUPS.forEach(grp => {
+    g.appendChild(el('th', { className: 'gs', colSpan: grp.steps.length + (grp.rid ? 1 : 0), textContent: grp.label }));
+    grp.steps.forEach(([, label], i) => c.appendChild(el('th', { className: i === 0 ? 'gs' : '', textContent: label })));
+    if (grp.rid) c.appendChild(el('th', { textContent: 'RID' }));
+  });
+  g.appendChild(el('th', { className: 'gs' })); c.appendChild(el('th', { className: 'gs', textContent: 'Done' }));
+  thead.append(g, c);
+}
+
+function tickCell(r, g, i) {
   const [field, label] = g.steps[i];
   const on = !!r[field];
-  const prevDone = i === 0 || r[g.steps[i - 1][0]];
-  const nextDone = i < g.steps.length - 1 && r[g.steps[i + 1][0]];
-  // Only the next open step can be ticked, and only the last ticked step unticked.
-  const b = el('button', { type: 'button', className: 'step' + (on ? ' on' : ''), textContent: label,
-                           disabled: on ? !!nextDone : !prevDone });
-  b.title = on ? (nextDone ? 'Untick the later step first' : 'Click to undo') : (prevDone ? 'Click when done' : 'Finish the previous step first');
-  b.addEventListener('click', () => { b.disabled = true; call('setField', [r.key, field, !on], () => toast('Saved')); });
+  const prevDone = i === 0 ? (!g.gate || g.gate(r)) : r[g.steps[i - 1][0]];
+  const nextDone = i < g.steps.length - 1 ? r[g.steps[i + 1][0]]
+    : g.label === 'FSSAI' && GROUPS.some(x => x.gate && x.steps.some(([f]) => r[f]));
+  // Steps go in order: only the next open one can be ticked, only the last ticked one undone.
+  const b = el('button', { type: 'button', className: 'tick' + (on ? ' on' : ''), textContent: '✓',
+                           disabled: on ? !!nextDone : !prevDone,
+                           title: g.label + ' · ' + label + (!on && !prevDone ? (i === 0 ? ' (FSSAI Ack + Licence first)' : ' (previous step first)') : '') });
+  b.addEventListener('click', () => setLocal(r, field, !on));
   return b;
 }
 
-function ridInput(r, g) {
-  const unlocked = r[g.steps[g.steps.length - 1][0]];
+function ridCell(r, g) {
   const val = String(r[g.rid] || '');
-  const inp = el('input', { type: 'text', className: 'rid' + (val ? ' filled' : ''), value: val, maxLength: 40,
-                            placeholder: 'RID', disabled: !unlocked && !val,
-                            title: unlocked ? g.label + ' restaurant ID' : 'Available once listing is live' });
-  const save = () => {
-    const v = inp.value.trim();
-    if (v !== val) call('setField', [r.key, g.rid, v], () => toast('RID saved'));
-  };
-  inp.addEventListener('change', save);
+  const unlocked = r[g.steps[g.steps.length - 1][0]];
+  const inp = el('input', { type: 'text', className: 'rid' + (val ? ' filled' : ''), value: val, maxLength: 40, placeholder: 'RID',
+                            disabled: !unlocked && !val, title: unlocked ? g.label + ' RID' : 'Tick Live first' });
+  inp.addEventListener('change', () => { const v = inp.value.trim(); if (v !== val) setLocal(r, g.rid, v); });
   inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
   return inp;
 }
 
-function storeCard(r) {
-  const card = el('div', { className: 'store' + (isDone(r) ? ' done' : '') });
-  const typeSel = el('select', { className: 'type', title: 'Store type' });
-  state.types.forEach(t => typeSel.appendChild(el('option', { value: t, textContent: t, selected: t === r.type })));
-  typeSel.addEventListener('change', () => call('setField', [r.key, 'type', typeSel.value], () => toast('Saved')));
-  const arch = el('button', { className: 'link', type: 'button', textContent: 'archive', title: 'Remove from the list once the store is fully up' });
-  arch.addEventListener('click', () => call('setField', [r.key, 'archived', true], () => toast('Archived')));
-  const meta = [r.city, r.launch_date ? 'go-live ' + r.launch_date : ''].filter(Boolean).join(' · ');
-  card.appendChild(el('div', { className: 'head' }, [
-    el('span', { className: 'name', textContent: r.store_name }), typeSel,
-    el('span', { className: 'meta', textContent: meta }), arch,
-    el('span', { className: 'count', textContent: `${doneCount(r)}/${TOTAL}` }),
-  ]));
+function row(r) {
+  const tr = el('tr', { className: isDone(r) ? 'done' : '' });
+  tr.appendChild(el('td', { className: 'l name', textContent: r.store_name, title: r.store_name }));
 
-  const groups = el('div', { className: 'groups' });
+  const type = options(el('select'), state.types.slice(), r.type);
+  type.addEventListener('change', () => setLocal(r, 'type', type.value));
+  const city = options(el('select'), state.cities.slice(), r.city);
+  city.addEventListener('change', () => setLocal(r, 'city', city.value));
+  const date = el('input', { type: 'date', className: 'date', value: r.launch_date || '' });
+  date.addEventListener('change', () => setLocal(r, 'launch_date', date.value));
+  const x = el('button', { type: 'button', className: 'x', textContent: '✕', title: 'Archive (remove once fully live)' });
+  x.addEventListener('click', () => setLocal(r, 'archived', true));
+  [type, city, date, x].forEach(n => tr.appendChild(el('td', { className: 'l' }, [n])));
+
   GROUPS.forEach(g => {
-    const steps = el('div', { className: 'steps' }, g.steps.map((_, i) => stepButton(r, g, i)));
-    if (g.rid) steps.appendChild(ridInput(r, g));
-    groups.appendChild(el('div', { className: 'grp' + (groupDone(r, g) ? ' complete' : '') }, [
-      el('div', { className: 'glabel', textContent: g.label }), steps,
-    ]));
+    const applies = !g.applies || g.applies(r);
+    const done = applies && groupDone(r, g);
+    g.steps.forEach((_, i) => tr.appendChild(el('td', { className: (i === 0 ? 'gs ' : '') + (done ? 'gdone' : '') },
+      [applies ? tickCell(r, g, i) : el('span', { className: 'na', textContent: '—' })])));
+    if (g.rid) tr.appendChild(el('td', { className: done ? 'gdone' : '' }, [applies ? ridCell(r, g) : el('span', { className: 'na', textContent: '—' })]));
   });
-  card.appendChild(groups);
-  return card;
+  tr.appendChild(el('td', { className: 'gs' }, [el('span', { className: 'prog', textContent: `${doneCount(r)}/${total(r)}` })]));
+  return tr;
 }
 
 function render() {
-  document.getElementById('loading').style.display = 'none';
   const active = state.rows.filter(r => !r.archived);
   const done = active.filter(isDone).length;
   pills(document.getElementById('status-bar'),
         [['Pending', 'Pending', active.length - done], ['Done', 'Fully live', done], ['All', 'All', active.length]],
         ui.status, v => { ui.status = v; render(); });
-
-  const cities = [...new Set(active.map(r => r.city || '—'))].sort();
+  const cities = [...new Set(active.map(r => r.city).filter(Boolean))].sort();
   const cityBar = document.getElementById('city-bar');
   if (cities.length > 1) pills(cityBar, [['All', 'All cities']].concat(cities.map(c => [c, c])), ui.city, v => { ui.city = v; render(); });
   else { cityBar.textContent = ''; ui.city = 'All'; }
 
-  const dl = document.getElementById('city-list'); dl.textContent = '';
-  cities.forEach(c => dl.appendChild(el('option', { value: c })));
   const ft = document.getElementById('f-type');
-  if (!ft.options.length) state.types.forEach(t => ft.appendChild(el('option', { value: t, textContent: t })));
+  if (!ft.options.length) options(ft, state.types.slice(), state.types[0]);
+  const fc = document.getElementById('f-city');
+  if (fc.options.length === 1) options(fc, state.cities.slice(), '');
 
-  const list = document.getElementById('list'); list.textContent = '';
+  const tbody = document.querySelector('#t tbody'); tbody.textContent = '';
   const rows = visible();
   if (!rows.length) {
-    list.appendChild(el('div', { className: 'empty', textContent: active.length ? 'No stores in this view.' : 'No upcoming stores yet. Use "+ Add store" to add one.' }));
-    return;
+    tbody.appendChild(el('tr', {}, [el('td', { colSpan: 30, className: 'empty',
+      textContent: active.length ? 'No stores in this view.' : 'No upcoming stores yet. Add one above.' })]));
   }
-  rows.forEach(r => list.appendChild(storeCard(r)));
+  rows.forEach(r => tbody.appendChild(row(r)));
+  syncLabel();
 }
 
 document.getElementById('q').addEventListener('input', e => { ui.q = e.target.value; if (state) render(); });
-document.getElementById('add-toggle').addEventListener('click', () => document.getElementById('add-form').classList.toggle('open'));
-document.getElementById('add-cancel').addEventListener('click', () => document.getElementById('add-form').classList.remove('open'));
-document.getElementById('add-form').addEventListener('submit', e => {
+document.getElementById('add').addEventListener('submit', e => {
   e.preventDefault();
-  const o = { store_name: document.getElementById('f-name').value, city: document.getElementById('f-city').value,
-              type: document.getElementById('f-type').value, launch_date: document.getElementById('f-date').value };
-  call('addStore', [o], () => { e.target.reset(); e.target.classList.remove('open'); ui.status = 'Pending'; toast('Store added'); render(); });
+  if (!state) return;
+  const o = {
+    key: 'M-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+    store_name: document.getElementById('f-name').value.trim(),
+    type: document.getElementById('f-type').value,
+    city: document.getElementById('f-city').value,
+    launch_date: document.getElementById('f-date').value,
+  };
+  if (!o.store_name || !o.city) return;
+  const r = { key: o.key, store_name: o.store_name, type: o.type, city: o.city, launch_date: o.launch_date, source: 'manual', archived: false };
+  state.fields.forEach(f => { r[f] = false; });
+  state.rows.push(r);   // shown immediately; list sorts newest first
+  ui.status = 'Pending'; ui.q = ''; document.getElementById('q').value = '';
+  document.getElementById('f-name').value = ''; document.getElementById('f-date').value = '';
+  render();
+  enqueue('addStore', [o]);
+  document.getElementById('f-name').focus();
 });
 
-google.script.run
-  .withSuccessHandler(s => { if (!s) { document.getElementById('loading').textContent = 'Could not load — reload the page.'; return; } state = s; render(); })
-  .withFailureHandler(e => { document.getElementById('loading').textContent = 'Could not load: ' + (e && e.message || e); })
-  .getState();
+function load() {
+  google.script.run
+    .withSuccessHandler(s => { if (s) { state = s; render(); } })
+    .withFailureHandler(e => toast('Could not load: ' + (e && e.message || e)))
+    .getState();
+}
+renderHead();
+load();
 </script>
 </body>
 </html>

@@ -21,7 +21,16 @@ const META_FIELDS = ['key', 'store_name', 'city', 'type', 'source', 'launch_date
 const RID_FIELDS = ['swiggy_rid', 'zomato_rid', 'ownly_rid'];
 const HEADERS = META_FIELDS.concat(CHECK_FIELDS, ['updated_at', 'updated_by'], RID_FIELDS);
 const EDITABLE = CHECK_FIELDS.concat(RID_FIELDS, ['type', 'city', 'store_name', 'archived']);
-const TYPES = ['Dine-in / Mall', 'Shop-in-shop (SB)', 'Delivery / Cloud Kitchen', 'Kiosk', 'Other'];
+const TYPES = ['Delivery / Cloud Kitchen', 'Dine-in / Mall', 'Shop-in-shop (SB)', 'Kiosk'];
+// Markets Krispy Kreme is live in; the Add form's city dropdown.
+const CITIES = ['Bengaluru', 'Hyderabad', 'Chennai', 'Mumbai', 'Pune', 'NCR', 'Jaipur', 'Chandigarh Tricity'];
+// Free-text cities typed before the dropdown existed → canonical names, so the
+// Ownly (Bengaluru/Hyderabad only) rule and city filters see one spelling.
+const CITY_ALIASES = { bangalore: 'Bengaluru', bengaluru: 'Bengaluru', blr: 'Bengaluru', hyderabad: 'Hyderabad', hyd: 'Hyderabad',
+  chennai: 'Chennai', chenn: 'Chennai', maa: 'Chennai', mumbai: 'Mumbai', bombay: 'Mumbai', bom: 'Mumbai', pune: 'Pune', pnq: 'Pune',
+  ncr: 'NCR', delhi: 'NCR', 'new delhi': 'NCR', gurgaon: 'NCR', gurugram: 'NCR', noida: 'NCR', jaipur: 'Jaipur',
+  chandigarh: 'Chandigarh Tricity', 'chandigarh tricity': 'Chandigarh Tricity' };
+function canonCity_(c) { return CITY_ALIASES[String(c || '').trim().toLowerCase()] || c; }
 
 function sheet_() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -49,6 +58,7 @@ function readAll_(sh) {
     if (o.launch_date instanceof Date) o.launch_date = Utilities.formatDate(o.launch_date, 'Asia/Kolkata', 'yyyy-MM-dd');
     if (o.updated_at instanceof Date) o.updated_at = o.updated_at.toISOString();
     RID_FIELDS.forEach(f => { o[f] = o[f] == null ? '' : String(o[f]); });
+    o.city = canonCity_(o.city);
     return o;
   });
 }
@@ -92,7 +102,7 @@ function purgeAutoRowsOnce_(sh) {
 }
 
 function state_(sh) {
-  return { types: TYPES, fields: CHECK_FIELDS, rows: readAll_(sh), me: user_() };
+  return { types: TYPES, cities: CITIES, fields: CHECK_FIELDS, rows: readAll_(sh), me: user_() };
 }
 
 function doGet() {
@@ -148,10 +158,14 @@ function addStore(o) {
     const name = clean_(o.store_name);
     if (!name) throw new Error('Store name is required');
     const sh = sheet_();
-    const key = 'M-' + Date.now();
+    // The page creates the row optimistically under its own key, so later
+    // edits made before this call returns still point at the right row.
+    const wanted = String(o.key || '');
+    const taken = readAll_(sh).some(r => String(r.key) === wanted);
+    const key = /^M-\d+-[a-z0-9]{1,8}$/.test(wanted) && !taken ? wanted : 'M-' + Date.now();
     sh.appendRow(newRow_({
       key: key, store_name: name, city: clean_(o.city, 60),
-      type: TYPES.indexOf(o.type) >= 0 ? o.type : 'Other',
+      type: TYPES.indexOf(o.type) >= 0 ? o.type : TYPES[0],
       source: 'manual', launch_date: clean_(o.launch_date, 10),
     }));
     log_(key, 'added', name);

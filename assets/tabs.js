@@ -11,6 +11,7 @@
     });
     // The "Data as of" line describes the 90d performance data only.
     document.getElementById('generated-at').hidden = tab === 'status';
+    document.body.classList.toggle('tab-status', tab === 'status');
     if (tab === 'status') {
       const f = document.getElementById('status-frame');
       if (!f.src) f.src = f.dataset.src;
