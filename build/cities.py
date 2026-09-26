@@ -14,6 +14,7 @@ PREFIX_TO_CITY = {
     "GZB": "NCR",
     "FDB": "NCR",
     "BLR": "Bengaluru",
+    "BOM": "Mumbai",
     "MAA": "Chennai",
     "HYD": "Hyderabad",
     "JAI": "Jaipur",

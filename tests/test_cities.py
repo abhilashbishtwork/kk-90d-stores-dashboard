@@ -71,3 +71,8 @@ def test_display_name_strips_rename_suffix_noise():
 
 def test_display_name_handles_multi_word_prefix():
     assert display_name_for("Greater Noida KK Alpha 2 Online") == "Alpha 2"
+
+
+def test_bom_prefix_is_mumbai():
+    assert city_for("BOM KK Airoli") == "Mumbai"
+    assert display_name_for("BOM KK Inorbit Vashi") == "Inorbit Vashi"

@@ -111,7 +111,9 @@ function ratingChipCell(cell, ratingEntry) {
 
 function scaledChip(displayText, rawValue, kind) {
   const span = document.createElement('span');
-  span.className = 'metric-chip ' + metricChipClass(rawValue, kind);
+  // Anything that displays as zero is flagged red so dead channels stand out.
+  const isZero = (kind === 'minOrdersPerDay' || kind === 'minRevPerDay') && /^0(\.0)?$/.test(displayText);
+  span.className = 'metric-chip ' + (isZero ? 'crit' : metricChipClass(rawValue, kind));
   span.textContent = displayText;
   return span;
 }
