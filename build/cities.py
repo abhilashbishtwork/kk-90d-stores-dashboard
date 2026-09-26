@@ -26,11 +26,17 @@ MULTI_WORD_PREFIXES = {
     "noida": "NCR",
 }
 
+# Navi Mumbai stores sometimes carry a "PNQ" (Pune) prefix in ClickHouse
+# (e.g. "PNQ KK Nerul"); the locality wins over the prefix.
+MUMBAI_LOCALITIES = {"nerul", "kharghar", "vashi", "airoli", "panvel", "belapur", "sanpada", "ghansoli", "seawoods", "ulwe", "kamothe"}
+
 UNCLASSIFIED = "Unclassified"
 
 
 def city_for(store_name):
     lowered = store_name.strip().lower()
+    if MUMBAI_LOCALITIES & set(lowered.replace(",", " ").split()):
+        return "Mumbai"
     for prefix, city in MULTI_WORD_PREFIXES.items():
         if lowered.startswith(prefix):
             return city

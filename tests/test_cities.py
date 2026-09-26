@@ -76,3 +76,10 @@ def test_display_name_handles_multi_word_prefix():
 def test_bom_prefix_is_mumbai():
     assert city_for("BOM KK Airoli") == "Mumbai"
     assert display_name_for("BOM KK Inorbit Vashi") == "Inorbit Vashi"
+
+
+def test_navi_mumbai_locality_overrides_pune_prefix():
+    assert city_for("PNQ KK Nerul") == "Mumbai"
+    assert city_for("PNQ KK Kharghar") == "Mumbai"
+    assert display_name_for("PNQ KK Kharghar") == "Kharghar"
+    assert city_for("PNQ KK Baner") == "Pune"
