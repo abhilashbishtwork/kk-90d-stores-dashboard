@@ -141,8 +141,8 @@ function render() {
   const active = state.rows.filter(r => !r.archived);
   const done = active.filter(isDone).length;
   document.getElementById('sub').textContent =
-    `${active.length} stores tracked · ticks save instantly to the shared Sheet` +
-    (state.me ? ` as ${state.me}` : '') + (state.synced === false ? ' · ⚠ couldn\'t reach the dashboard to auto-add new stores' : '');
+    `${active.length} upcoming stores · ticks save instantly to the shared Sheet` +
+    (state.me ? ` as ${state.me}` : '');
 
   const k = document.getElementById('kpis'); k.textContent = '';
   const count = f => active.filter(f).length;
@@ -172,7 +172,7 @@ function render() {
   const tbody = document.querySelector('#t tbody'); tbody.textContent = '';
   const rows = filtered();
   if (!rows.length) {
-    tbody.appendChild(el('tr', {}, [el('td', { colSpan: ALL_COLS.length + 2, className: 'empty', textContent: 'No stores in this view.' })]));
+    tbody.appendChild(el('tr', {}, [el('td', { colSpan: ALL_COLS.length + 2, className: 'empty', textContent: state.rows.length ? 'No stores in this view.' : 'No upcoming stores yet. Use "+ Add store" to add one.' })]));
     return;
   }
   rows.forEach(r => {

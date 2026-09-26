@@ -2,6 +2,8 @@
 // curefoods.in-only web app (Workspace blocks anonymous Apps Script, so the
 // public GitHub Pages dashboard links/embeds this page instead of writing to
 // the Sheet itself). Every change is appended to a Log tab with the editor.
+// Only upcoming stores entered by hand belong here; live stores are never
+// auto-added, and a store is archived once it is fully up.
 
 const SHEET_ID = '1NGtk8SJjELTwfmV2pt-H50Zx2ml-k63sPlC_HY0blYk';
 const TAB = 'Status';
@@ -15,7 +17,6 @@ const CHECK_FIELDS = [
 ];
 const META_FIELDS = ['key', 'store_name', 'city', 'type', 'source', 'launch_date', 'archived'];
 const HEADERS = META_FIELDS.concat(CHECK_FIELDS, ['updated_at', 'updated_by']);
-const DATA_JSON_URL = 'https://abhilashbishtwork.github.io/kk-90d-stores-dashboard/data.json';
 const EDITABLE = CHECK_FIELDS.concat(['type', 'city', 'store_name', 'archived']);
 const TYPES = ['Dine-in / Mall', 'Shop-in-shop (SB)', 'Delivery / Cloud Kitchen', 'Kiosk', 'Other'];
 
@@ -73,40 +74,18 @@ function log_(key, field, value) {
   lg.appendRow([new Date(), user_(), key, field, String(value)]);
 }
 
-// Best guess from the aggregator/POS store name; editable in the UI.
-function guessType_(name) {
-  const n = ' ' + String(name).toLowerCase() + ' ';
-  if (/\bpos\b/.test(n) || n.indexOf(' mall') >= 0) return 'Dine-in / Mall';
-  if (n.indexOf(' kk sb ') >= 0) return 'Shop-in-shop (SB)';
-  return 'Delivery / Cloud Kitchen';
+// v1 auto-seeded every already-live store from data.json; the tracker is for
+// upcoming stores only, so strip those rows once. Manual rows are untouched.
+function purgeAutoRowsOnce_(sh) {
+  const props = PropertiesService.getScriptProperties();
+  if (props.getProperty('autoPurged')) return;
+  const src = sh.getDataRange().getValues().map(r => r[HEADERS.indexOf('source')]);
+  for (let i = src.length - 1; i >= 1; i--) if (src[i] === 'auto') sh.deleteRow(i + 1);
+  props.setProperty('autoPurged', '1');
 }
 
-// Adds any store the daily ClickHouse build detected as new (data.json) that
-// the Sheet hasn't seen yet. Failure to reach data.json never blocks the page.
-function syncAutoStores_(sh, rows) {
-  let stores;
-  try {
-    const res = UrlFetchApp.fetch(DATA_JSON_URL, { muteHttpExceptions: true });
-    if (res.getResponseCode() !== 200) return false;
-    stores = JSON.parse(res.getContentText()).stores || [];
-  } catch (e) {
-    return false;
-  }
-  const keys = rows.map(r => String(r.key));
-  const add = stores.filter(s => s.store_name && keys.indexOf(clean_(s.store_name)) < 0).map(s => newRow_({
-    key: clean_(s.store_name),
-    store_name: clean_(s.display_name || s.store_name),
-    city: clean_(s.city, 60),
-    type: guessType_(s.store_name),
-    source: 'auto',
-    launch_date: clean_(s.launch_date, 10),
-  }));
-  if (add.length) sh.getRange(sh.getLastRow() + 1, 1, add.length, HEADERS.length).setValues(add);
-  return true;
-}
-
-function state_(sh, synced) {
-  return { types: TYPES, fields: CHECK_FIELDS, rows: readAll_(sh), synced: synced, me: user_() };
+function state_(sh) {
+  return { types: TYPES, fields: CHECK_FIELDS, rows: readAll_(sh), me: user_() };
 }
 
 function doGet() {
@@ -121,8 +100,8 @@ function getState() {
   lock.waitLock(20000);
   try {
     const sh = sheet_();
-    const synced = syncAutoStores_(sh, readAll_(sh));
-    return state_(sh, synced);
+    purgeAutoRowsOnce_(sh);
+    return state_(sh);
   } finally {
     lock.releaseLock();
   }
@@ -146,7 +125,7 @@ function setField(key, field, value) {
     sh.getRange(rowNum, HEADERS.indexOf('updated_at') + 1).setValue(new Date());
     sh.getRange(rowNum, HEADERS.indexOf('updated_by') + 1).setValue(user_());
     log_(key, field, v);
-    return state_(sh, true);
+    return state_(sh);
   } finally {
     lock.releaseLock();
   }
@@ -167,7 +146,7 @@ function addStore(o) {
       source: 'manual', launch_date: clean_(o.launch_date, 10),
     }));
     log_(key, 'added', name);
-    return state_(sh, true);
+    return state_(sh);
   } finally {
     lock.releaseLock();
   }
