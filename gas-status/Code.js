@@ -16,8 +16,11 @@ const CHECK_FIELDS = [
   'zomato_district', 'swiggy_dineout', 'google_listing',
 ];
 const META_FIELDS = ['key', 'store_name', 'city', 'type', 'source', 'launch_date', 'archived'];
-const HEADERS = META_FIELDS.concat(CHECK_FIELDS, ['updated_at', 'updated_by']);
-const EDITABLE = CHECK_FIELDS.concat(['type', 'city', 'store_name', 'archived']);
+// Aggregator restaurant IDs, filled once a listing is live. Appended after the
+// v1 columns so existing Sheets keep their column order.
+const RID_FIELDS = ['swiggy_rid', 'zomato_rid', 'ownly_rid'];
+const HEADERS = META_FIELDS.concat(CHECK_FIELDS, ['updated_at', 'updated_by'], RID_FIELDS);
+const EDITABLE = CHECK_FIELDS.concat(RID_FIELDS, ['type', 'city', 'store_name', 'archived']);
 const TYPES = ['Dine-in / Mall', 'Shop-in-shop (SB)', 'Delivery / Cloud Kitchen', 'Kiosk', 'Other'];
 
 function sheet_() {
@@ -29,6 +32,9 @@ function sheet_() {
     sh.setFrozenRows(1);
     const def = ss.getSheetByName('Sheet1');
     if (def && ss.getSheets().length > 1) ss.deleteSheet(def);
+  }
+  if (sh.getLastColumn() < HEADERS.length) {
+    sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
   }
   return sh;
 }
@@ -42,6 +48,7 @@ function readAll_(sh) {
     CHECK_FIELDS.concat(['archived']).forEach(f => { o[f] = o[f] === true || o[f] === 'TRUE'; });
     if (o.launch_date instanceof Date) o.launch_date = Utilities.formatDate(o.launch_date, 'Asia/Kolkata', 'yyyy-MM-dd');
     if (o.updated_at instanceof Date) o.updated_at = o.updated_at.toISOString();
+    RID_FIELDS.forEach(f => { o[f] = o[f] == null ? '' : String(o[f]); });
     return o;
   });
 }
@@ -119,9 +126,11 @@ function setField(key, field, value) {
     let v = value;
     if (CHECK_FIELDS.indexOf(field) >= 0 || field === 'archived') v = v === true;
     else if (field === 'type') { if (TYPES.indexOf(v) < 0) throw new Error('Bad type'); }
-    else { v = clean_(v); if (field === 'store_name' && !v) throw new Error('Name required'); }
+    else { v = clean_(v, RID_FIELDS.indexOf(field) >= 0 ? 40 : 120); if (field === 'store_name' && !v) throw new Error('Name required'); }
     const rowNum = idx + 2;
-    sh.getRange(rowNum, HEADERS.indexOf(field) + 1).setValue(v);
+    const cell = sh.getRange(rowNum, HEADERS.indexOf(field) + 1);
+    if (RID_FIELDS.indexOf(field) >= 0) cell.setNumberFormat('@');  // keep IDs as text
+    cell.setValue(v);
     sh.getRange(rowNum, HEADERS.indexOf('updated_at') + 1).setValue(new Date());
     sh.getRange(rowNum, HEADERS.indexOf('updated_by') + 1).setValue(user_());
     log_(key, field, v);

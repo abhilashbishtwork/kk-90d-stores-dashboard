@@ -191,4 +191,4 @@ td.offline-highlight { background: var(--good-bg); }
 .tabs a.on { color: #0a6b3f; border-bottom-color: #0a6b3f; }
 .status-note { font-size: 13px; color: #6b6b6b; margin: 0 0 10px; }
 .status-note a { color: #0a6b3f; font-weight: 600; white-space: nowrap; }
-#status-frame { width: 100%; height: calc(100vh - 180px); min-height: 560px; border: 1px solid #e3e3e3; border-radius: 10px; background: #fff; }
+#status-frame { width: 100%; height: calc(100vh - 140px); min-height: 560px; border: 1px solid #e3e3e3; border-radius: 10px; background: #fff; }
