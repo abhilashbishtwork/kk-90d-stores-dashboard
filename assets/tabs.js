@@ -9,6 +9,8 @@
       document.getElementById('view-' + t).hidden = t !== tab;
       document.querySelector('#tabs [data-tab="' + t + '"]').classList.toggle('on', t === tab);
     });
+    // The "Data as of" line describes the 90d performance data only.
+    document.getElementById('generated-at').hidden = tab === 'status';
     if (tab === 'status') {
       const f = document.getElementById('status-frame');
       if (!f.src) f.src = f.dataset.src;
