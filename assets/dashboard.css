@@ -184,3 +184,11 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 /* ---------- offline-only metrics (Off-OPD, Off-Rev/day, Google storefront) ---------- */
 td.offline-highlight { background: var(--good-bg); }
+
+/* ---------- top-level tabs ---------- */
+.tabs { display: flex; gap: 4px; border-bottom: 2px solid #e3e3e3; margin: 4px 0 16px; overflow-x: auto; }
+.tabs a { padding: 9px 14px; font-weight: 600; color: #6b6b6b; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.tabs a.on { color: #0a6b3f; border-bottom-color: #0a6b3f; }
+.status-note { font-size: 13px; color: #6b6b6b; margin: 0 0 10px; }
+.status-note a { color: #0a6b3f; font-weight: 600; white-space: nowrap; }
+#status-frame { width: 100%; height: calc(100vh - 180px); min-height: 560px; border: 1px solid #e3e3e3; border-radius: 10px; background: #fff; }

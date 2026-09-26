@@ -9,16 +9,28 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-512.png">
   <link rel="apple-touch-icon" href="assets/icon-512.png">
-  <title>Krispy Kreme · New Stores (90d)</title>
+  <title>Krispy Kreme · New Stores</title>
   <link rel="stylesheet" href="assets/dashboard.css">
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <h1 id="page-title">Krispy Kreme <span class="dot">·</span> New Stores (90d)</h1>
+      <h1 id="page-title">Krispy Kreme <span class="dot">·</span> New Stores</h1>
       <p id="generated-at"></p>
     </div>
 
+    <nav class="tabs" id="tabs">
+      <a href="#status" data-tab="status">New Store Status</a>
+      <a href="#performance" data-tab="performance">Performance (90d)</a>
+    </nav>
+
+    <section id="view-status" class="tab-view">
+      <p class="status-note">Launch checklist for every new store: FSSAI, Swiggy / Zomato / Ownly listings, District, Dineout, Google. Needs a curefoods.in Google login.
+        <a href="https://script.google.com/a/macros/curefoods.in/s/AKfycbyMCOiGy3u8kF5A0sSMVPCMX1YRjzNAWm8jrPaBhmVUNHfuJHNENkOOA4xA5Aij9ZSKCg/exec" target="_blank" rel="noopener">Open full screen ↗</a></p>
+      <iframe id="status-frame" title="New Store Status" data-src="https://script.google.com/a/macros/curefoods.in/s/AKfycbyMCOiGy3u8kF5A0sSMVPCMX1YRjzNAWm8jrPaBhmVUNHfuJHNENkOOA4xA5Aij9ZSKCg/exec"></iframe>
+    </section>
+
+    <div id="view-performance" class="tab-view">
     <div class="store-picker-row" id="store-picker-row"></div>
 
     <p class="kpi-date-banner" id="kpi-date-banner"></p>
@@ -61,9 +73,11 @@
       <h2>Revenue by store</h2>
       <div class="store-grid" id="store-grid"></div>
     </section>
+    </div>
   </div>
 
   <script src="assets/alerts.js"></script>
   <script src="assets/dashboard.js"></script>
+  <script src="assets/tabs.js"></script>
 </body>
 </html>

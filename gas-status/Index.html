@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+  :root {
+    --green: #0a6b3f; --green-soft: #e6f2ec; --red: #c8102e; --amber: #b86e00; --amber-soft: #fff4e0;
+    --ink: #1c1c1c; --muted: #6b6b6b; --line: #e3e3e3; --bg: #f7f6f3; --card: #fff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; margin: 0 0 2px; }
+  h1 .dot { color: var(--red); }
+  .sub { color: var(--muted); font-size: 12px; margin: 0 0 14px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .kpi .v { font-size: 22px; font-weight: 700; }
+  .kpi .l { color: var(--muted); font-size: 12px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .pill { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 13px; }
+  .pill.on { background: var(--green); border-color: var(--green); color: #fff; }
+  .spacer { flex: 1; }
+  button.primary { background: var(--green); color: #fff; border: 0; border-radius: 8px; padding: 7px 14px; font-weight: 600; cursor: pointer; }
+  input[type=search], input[type=text], input[type=date], select { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: inherit; background: #fff; }
+  #add-form { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; align-items: center; }
+  #add-form.open { display: flex; }
+  .scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1100px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; }
+  thead th { background: #fafafa; font-size: 11px; color: var(--muted); font-weight: 600; position: sticky; top: 0; }
+  thead tr.groups th { font-size: 12px; color: var(--ink); border-bottom: 0; }
+  th.gstart, td.gstart { border-left: 1px solid var(--line); }
+  td.store, th.store { text-align: left; position: sticky; left: 0; background: inherit; z-index: 1; min-width: 230px; white-space: normal; }
+  thead th.store { background: #fafafa; z-index: 2; }
+  tbody tr { background: #fff; }
+  tbody tr.done { background: #f3faf6; }
+  tbody tr.archived { opacity: .55; }
+  .name { font-weight: 600; }
+  .meta { color: var(--muted); font-size: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 2px; }
+  .meta select { font-size: 12px; padding: 1px 4px; border-radius: 6px; }
+  .tag { font-size: 11px; border-radius: 4px; padding: 0 5px; background: var(--amber-soft); color: var(--amber); }
+  input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--green); cursor: pointer; }
+  .prog { font-weight: 600; font-size: 12px; }
+  .prog .track { height: 5px; width: 64px; background: var(--line); border-radius: 3px; margin: 3px auto 0; overflow: hidden; }
+  .prog .fill { height: 100%; background: var(--green); }
+  .link { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 12px; text-decoration: underline; padding: 0; }
+  #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 13px; display: none; }
+  #toast.err { background: var(--red); }
+  .empty { padding: 30px; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Krispy Kreme <span class="dot">·</span> New Store Status</h1>
+  <p class="sub" id="sub">Loading…</p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="bar" id="city-bar"></div>
+  <div class="bar">
+    <span id="status-bar"></span>
+    <input type="search" id="q" placeholder="Search store">
+    <span class="spacer"></span>
+    <button class="primary" id="add-toggle">+ Add store</button>
+  </div>
+
+  <form id="add-form">
+    <input type="text" id="f-name" placeholder="Store name (e.g. HYD KK Inorbit Mall)" required maxlength="120" style="min-width:260px">
+    <input type="text" id="f-city" placeholder="City" maxlength="60" list="city-list">
+    <datalist id="city-list"></datalist>
+    <select id="f-type"></select>
+    <label style="font-size:12px;color:var(--muted)">Go-live <input type="date" id="f-date"></label>
+    <button class="primary" type="submit">Add</button>
+    <button class="link" type="button" id="add-cancel">Cancel</button>
+  </form>
+
+  <div class="scroll">
+    <table id="t"><thead></thead><tbody></tbody></table>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const GROUPS = [
+  { label: 'FSSAI', cols: [['fssai_ack', 'Ack'], ['fssai_licence', 'Licence']] },
+  { label: 'Swiggy', cols: [['swiggy_fssai_pending', 'FSSAI pending'], ['swiggy_request', 'Request raised'], ['swiggy_live', 'Listing live']] },
+  { label: 'Zomato', cols: [['zomato_fssai_pending', 'FSSAI pending'], ['zomato_request', 'Request raised'], ['zomato_live', 'Listing live']] },
+  { label: 'Ownly', cols: [['ownly_fssai_pending', 'FSSAI pending'], ['ownly_request', 'Request raised'], ['ownly_live', 'Listing live']] },
+  { label: 'Zomato District', cols: [['zomato_district', 'Live']] },
+  { label: 'Swiggy Dineout', cols: [['swiggy_dineout', 'Live']] },
+  { label: 'Google', cols: [['google_listing', 'Listing']] },
+];
+const ALL_COLS = GROUPS.flatMap(g => g.cols.map(c => c[0]));
+const ui = { city: 'All', status: 'Pending', q: '' };
+let state = null;
+
+function el(tag, props, kids) {
+  const n = document.createElement(tag);
+  Object.assign(n, props || {});
+  (kids || []).forEach(k => n.appendChild(typeof k === 'string' ? document.createTextNode(k) : k));
+  return n;
+}
+function toast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = isErr ? 'err' : ''; t.style.display = 'block';
+  clearTimeout(toast._t); toast._t = setTimeout(() => { t.style.display = 'none'; }, isErr ? 5000 : 1500);
+}
+function call(fn, args, onOk) {
+  google.script.run
+    .withSuccessHandler(s => { if (!s) { toast('Empty response — reload', true); return; } state = s; render(); if (onOk) onOk(); })
+    .withFailureHandler(e => { toast('Not saved: ' + (e && e.message || e), true); render(); })[fn](...args);
+}
+function doneCount(r) { return ALL_COLS.filter(c => r[c]).length; }
+function isDone(r) { return doneCount(r) === ALL_COLS.length; }
+
+function filtered() {
+  const q = ui.q.toLowerCase();
+  return state.rows.filter(r => {
+    if (ui.status === 'Archived') { if (!r.archived) return false; }
+    else if (r.archived) return false;
+    if (ui.status === 'Pending' && isDone(r)) return false;
+    if (ui.status === 'Done' && !isDone(r)) return false;
+    if (ui.city !== 'All' && (r.city || '—') !== ui.city) return false;
+    if (q && String(r.store_name).toLowerCase().indexOf(q) < 0 && String(r.key).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  }).sort((a, b) => doneCount(a) - doneCount(b) || String(b.launch_date).localeCompare(String(a.launch_date)));
+}
+
+function pillRow(container, options, current, onPick) {
+  container.textContent = '';
+  options.forEach(([val, label]) => {
+    const b = el('button', { className: 'pill' + (val === current ? ' on' : ''), type: 'button', textContent: label });
+    b.addEventListener('click', () => onPick(val));
+    container.appendChild(b);
+  });
+}
+
+function render() {
+  const active = state.rows.filter(r => !r.archived);
+  const done = active.filter(isDone).length;
+  document.getElementById('sub').textContent =
+    `${active.length} stores tracked · ticks save instantly to the shared Sheet` +
+    (state.me ? ` as ${state.me}` : '') + (state.synced === false ? ' · ⚠ couldn\'t reach the dashboard to auto-add new stores' : '');
+
+  const k = document.getElementById('kpis'); k.textContent = '';
+  const count = f => active.filter(f).length;
+  [[active.length, 'Stores tracked'], [done, 'Fully live'], [active.length - done, 'Pending'],
+   [count(r => !r.fssai_licence), 'FSSAI licence pending'],
+   [count(r => !(r.swiggy_live && r.zomato_live && r.ownly_live)), 'Not live on all 3 apps']]
+    .forEach(([v, l]) => k.appendChild(el('div', { className: 'kpi' }, [el('div', { className: 'v', textContent: String(v) }), el('div', { className: 'l', textContent: l })])));
+
+  const cities = [...new Set(active.map(r => r.city || '—'))].sort();
+  pillRow(document.getElementById('city-bar'), [['All', 'All cities']].concat(cities.map(c => [c, c])), ui.city, v => { ui.city = v; render(); });
+  pillRow(document.getElementById('status-bar'), [['Pending', 'Pending'], ['Done', 'Fully live'], ['All', 'All'], ['Archived', 'Archived']], ui.status, v => { ui.status = v; render(); });
+  const dl = document.getElementById('city-list'); dl.textContent = '';
+  cities.forEach(c => dl.appendChild(el('option', { value: c })));
+  const ft = document.getElementById('f-type');
+  if (!ft.options.length) state.types.forEach(t => ft.appendChild(el('option', { value: t, textContent: t })));
+
+  const thead = document.querySelector('#t thead'); thead.textContent = '';
+  const g = el('tr', { className: 'groups' }, [el('th', { className: 'store' })]);
+  const c = el('tr', {}, [el('th', { className: 'store', textContent: 'Store · type' })]);
+  GROUPS.forEach(grp => {
+    g.appendChild(el('th', { className: 'gstart', colSpan: grp.cols.length, textContent: grp.label }));
+    grp.cols.forEach(([, label], i) => c.appendChild(el('th', { className: i === 0 ? 'gstart' : '', textContent: label })));
+  });
+  g.appendChild(el('th', { className: 'gstart' })); c.appendChild(el('th', { className: 'gstart', textContent: 'Progress' }));
+  thead.append(g, c);
+
+  const tbody = document.querySelector('#t tbody'); tbody.textContent = '';
+  const rows = filtered();
+  if (!rows.length) {
+    tbody.appendChild(el('tr', {}, [el('td', { colSpan: ALL_COLS.length + 2, className: 'empty', textContent: 'No stores in this view.' })]));
+    return;
+  }
+  rows.forEach(r => {
+    const tr = el('tr', { className: (isDone(r) ? 'done' : '') + (r.archived ? ' archived' : '') });
+    const typeSel = el('select', { title: 'Store type' });
+    state.types.forEach(t => typeSel.appendChild(el('option', { value: t, textContent: t, selected: t === r.type })));
+    typeSel.addEventListener('change', () => call('setField', [r.key, 'type', typeSel.value], () => toast('Saved')));
+    const meta = el('div', { className: 'meta' }, [typeSel, (r.city || '—') + (r.launch_date ? ' · live ' + r.launch_date : '')]);
+    if (r.source === 'manual') meta.appendChild(el('span', { className: 'tag', textContent: 'added manually' }));
+    const arch = el('button', { className: 'link', type: 'button', textContent: r.archived ? 'restore' : 'archive' });
+    arch.addEventListener('click', () => call('setField', [r.key, 'archived', !r.archived], () => toast(r.archived ? 'Restored' : 'Archived')));
+    meta.appendChild(arch);
+    tr.appendChild(el('td', { className: 'store' }, [el('div', { className: 'name', textContent: r.store_name }), meta]));
+
+    GROUPS.forEach(grp => grp.cols.forEach(([field, label], i) => {
+      const cb = el('input', { type: 'checkbox', checked: !!r[field], title: grp.label + ' — ' + label });
+      cb.addEventListener('change', () => { cb.disabled = true; call('setField', [r.key, field, cb.checked], () => toast('Saved')); });
+      tr.appendChild(el('td', { className: i === 0 ? 'gstart' : '' }, [cb]));
+    }));
+
+    const n = doneCount(r), pct = Math.round(100 * n / ALL_COLS.length);
+    const fill = el('div', { className: 'fill' }); fill.style.width = pct + '%';
+    tr.appendChild(el('td', { className: 'gstart' }, [el('div', { className: 'prog', textContent: `${n}/${ALL_COLS.length}` }, [el('div', { className: 'track' }, [fill])])]));
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('q').addEventListener('input', e => { ui.q = e.target.value; if (state) render(); });
+document.getElementById('add-toggle').addEventListener('click', () => document.getElementById('add-form').classList.toggle('open'));
+document.getElementById('add-cancel').addEventListener('click', () => document.getElementById('add-form').classList.remove('open'));
+document.getElementById('add-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const o = { store_name: document.getElementById('f-name').value, city: document.getElementById('f-city').value,
+              type: document.getElementById('f-type').value, launch_date: document.getElementById('f-date').value };
+  call('addStore', [o], () => { e.target.reset(); e.target.classList.remove('open'); ui.status = 'Pending'; toast('Store added'); render(); });
+});
+
+google.script.run
+  .withSuccessHandler(s => { if (!s) { document.getElementById('sub').textContent = 'Could not load — reload the page.'; return; } state = s; render(); })
+  .withFailureHandler(e => { document.getElementById('sub').textContent = 'Could not load: ' + (e && e.message || e); })
+  .getState();
+</script>
+</body>
+</html>
