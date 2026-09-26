@@ -1010,7 +1010,7 @@ function renderDiscountSection(stores, range) {
 // ---------- boot ----------
 
 async function loadData() {
-  const dashboard = await fetch('data.json').then(r => r.json());
+  const dashboard = await fetch('data.json', { cache: 'no-cache' }).then(r => r.json());
   return { dashboard };
 }
 
