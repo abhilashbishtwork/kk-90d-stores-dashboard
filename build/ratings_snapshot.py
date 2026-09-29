@@ -57,10 +57,32 @@ RATINGS_BY_DISPLAY_NAME = {
     "Sector 24": {"swiggy": _r(4.3, 60), "zomato": _r(4.2, 209)},
 }
 
-# No Google storefront ratings data has been provided yet — every store
-# shows as not-yet-rated for Google until a snapshot is pasted here,
-# same shape as RATINGS_BY_DISPLAY_NAME's swiggy/zomato entries.
-GOOGLE_BY_DISPLAY_NAME = {}
+# First Google storefront ratings pasted 2026-09-29 (same snapshot date
+# as RATINGS_BY_DISPLAY_NAME). Coverage is partial — the source export
+# only lists ~96 stores nationally (evidently ones with enough Google
+# reviews to be listed), so most Pune stores and every brand-new store
+# from this cycle (Medavakkam, all 5 Mumbai stores, SB Devanahalli) have
+# no entry and simply show as not-yet-rated, same as before.
+GOOGLE_BY_DISPLAY_NAME = {
+    "Mantri Mall": _r(4.2, 107),
+    "SB Sarjapura": _r(4.6, 10),
+    "Mohali Walk": _r(5.0, 19),
+    "Nexus Elante Mall": _r(5.0, 1),
+    "Mall of Jaipur": _r(5.0, 13),
+    "GIP Mall": _r(5.0, 1),
+    "Omaxe Chandni Chowk": _r(5.0, 1),
+    "Pacific Tagore Garden Mall": _r(5.0, 14),
+    "Amanora": _r(5.0, 58),
+    "Baner": _r(4.9, 25),
+    "Elpro Mall": _r(5.0, 48),
+    "JM Road": _r(5.0, 45),
+    "Niyati Plaza": _r(5.0, 51),
+    "Tribeca": _r(4.5, 44),
+    "CP 67 Mall": _r(4.2, 25),
+    "Karnal Haveli": _r(3.9, 16),
+    "Dhillon Plaza": _r(4.9, 37),
+    "Elan Miracle": _r(5.0, 1),
+}
 
 _EMPTY_RATING = {"swiggy": _r(None, None), "zomato": _r(None, None)}
 

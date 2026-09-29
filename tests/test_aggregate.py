@@ -168,7 +168,7 @@ def test_ratings_attached_for_a_known_display_name():
     ratings = payload["stores"][0]["ratings"]
     assert ratings["swiggy"]["rating"] == 4.6
     assert ratings["zomato"]["rating"] == 4.3
-    assert ratings["google"]["rating"] is None
+    assert ratings["google"]["rating"] == 4.5
     assert ratings["as_of"] == "2026-09-29"
 
 
