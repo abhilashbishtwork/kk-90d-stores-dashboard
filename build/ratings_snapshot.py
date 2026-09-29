@@ -61,8 +61,10 @@ RATINGS_BY_DISPLAY_NAME = {
 # as RATINGS_BY_DISPLAY_NAME). Coverage is partial — the source export
 # only lists ~96 stores nationally (evidently ones with enough Google
 # reviews to be listed), so most Pune stores and every brand-new store
-# from this cycle (Medavakkam, all 5 Mumbai stores, SB Devanahalli) have
-# no entry and simply show as not-yet-rated, same as before.
+# from this cycle (Medavakkam, 4 of the 5 Mumbai stores, SB Devanahalli)
+# have no entry and simply show as not-yet-rated, same as before.
+# "Inorbit Vashi" added separately from a user-supplied screenshot
+# (not in the bulk export) since it's brand new (launched 2026-09-21).
 GOOGLE_BY_DISPLAY_NAME = {
     "Mantri Mall": _r(4.2, 107),
     "SB Sarjapura": _r(4.6, 10),
@@ -77,6 +79,7 @@ GOOGLE_BY_DISPLAY_NAME = {
     "Elpro Mall": _r(5.0, 48),
     "JM Road": _r(5.0, 45),
     "Niyati Plaza": _r(5.0, 51),
+    "Inorbit Vashi": _r(5.0, 1),
     "Tribeca": _r(4.5, 44),
     "CP 67 Mall": _r(4.2, 25),
     "Karnal Haveli": _r(3.9, 16),
