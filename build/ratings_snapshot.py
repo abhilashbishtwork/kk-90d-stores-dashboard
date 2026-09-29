@@ -1,4 +1,4 @@
-"""One-time Swiggy/Zomato storefront ratings snapshot, as of 2026-08-24.
+"""One-time Swiggy/Zomato storefront ratings snapshot, as of 2026-09-29.
 
 Pasted by the user from a manual export covering every KK store
 nationally; filtered here to just the rows relevant to this dashboard
@@ -12,12 +12,12 @@ This is a snapshot, not a live feed — there is no manual CSV to keep
 updating (per project scope decision). Re-paste and update
 SNAPSHOT_DATE if a fresher export is provided later. A store not in
 this dict (e.g. one that launches after the snapshot date, or has no
-match in either export yet — Elpro Mall/Nexus Elante Mall/GIP Mall/
-Manyata Tech Park G Block as of this snapshot) simply shows as
-not-yet-rated.
+match in either export yet — Elpro Mall/JM Road/Nexus Elante Mall/
+Medavakkam/GIP Mall/Pacific Tagore Garden Mall/all 5 new Mumbai stores
+as of this snapshot) simply shows as not-yet-rated.
 """
 
-SNAPSHOT_DATE = "2026-08-24"
+SNAPSHOT_DATE = "2026-09-29"
 
 
 def _r(rating, count):
@@ -25,36 +25,36 @@ def _r(rating, count):
 
 
 RATINGS_BY_DISPLAY_NAME = {
-    "Omaxe Chandni Chowk": {"swiggy": _r(4.2, "<3"), "zomato": _r(None, None)},
-    "Niyati Plaza": {"swiggy": _r(4.3, 3), "zomato": _r(None, None)},
-    "Sangvi": {"swiggy": _r(4.3, "<3"), "zomato": _r(4.0, 5)},
-    "Law College": {"swiggy": _r(4.3, 3), "zomato": _r(4.0, 8)},
-    "Dhanori": {"swiggy": _r(4.3, 4), "zomato": _r(3.3, 3)},
-    "Hinjewadi": {"swiggy": _r(4.3, "<3"), "zomato": _r(4.0, 8)},
-    "Ravet": {"swiggy": _r(4.3, "<3"), "zomato": _r(4.0, 4)},
-    "Wagholi": {"swiggy": _r(4.3, 4), "zomato": _r(2.3, 3)},
-    "Elan Miracle": {"swiggy": _r(4.2, "<3"), "zomato": _r(2.3, 3)},
-    "Kothrud": {"swiggy": _r(4.3, 10), "zomato": _r(4.0, 24)},
-    "SB Sarjapura": {"swiggy": _r(4.4, 4), "zomato": _r(4.1, 3)},
-    "Pimpri": {"swiggy": _r(4.3, 7), "zomato": _r(4.0, 18)},
-    "Viman Nagar": {"swiggy": _r(4.3, 6), "zomato": _r(4.0, 31)},
-    "SB Devanahalli": {"swiggy": _r(4.4, 8), "zomato": _r(4.1, 40)},
+    "Omaxe Chandni Chowk": {"swiggy": _r(4.2, 5), "zomato": _r(None, 0)},
+    "Niyati Plaza": {"swiggy": _r(4.3, 10), "zomato": _r(4.3, 22)},
+    "Sangvi": {"swiggy": _r(4.3, 7), "zomato": _r(4.3, 18)},
+    "Law College": {"swiggy": _r(4.3, 11), "zomato": _r(4.3, 31)},
+    "Dhanori": {"swiggy": _r(4.3, 9), "zomato": _r(4.3, 26)},
+    "Hinjewadi": {"swiggy": _r(4.3, 14), "zomato": _r(4.3, 23)},
+    "Ravet": {"swiggy": _r(4.3, 12), "zomato": _r(4.3, 17)},
+    "Wagholi": {"swiggy": _r(None, 0), "zomato": _r(4.3, 3)},
+    "Elan Miracle": {"swiggy": _r(4.1, 3), "zomato": _r(3.0, 3)},
+    "Kothrud": {"swiggy": _r(4.3, 17), "zomato": _r(4.3, 45)},
+    "SB Sarjapura": {"swiggy": _r(4.3, 7), "zomato": _r(4.1, 5)},
+    "Pimpri": {"swiggy": _r(4.3, 14), "zomato": _r(4.3, 38)},
+    "Viman Nagar": {"swiggy": _r(4.3, 15), "zomato": _r(4.3, 55)},
+    "SB Devanahalli": {"swiggy": _r(4.3, 11), "zomato": _r(4.1, 68)},
     # ClickHouse's online store_name for this store is "PNQ KK Baner", but
     # both aggregators list its storefront as "KK FB Baner" — same
     # physical Baner outlet, confirmed by city+area match (no other
     # "Baner" candidate exists in either ratings export).
-    "Baner": {"swiggy": _r(4.1, 21), "zomato": _r(4.0, 30)},
-    "Amanora": {"swiggy": _r(4.3, 14), "zomato": _r(4.2, 52)},
-    "Tribeca": {"swiggy": _r(4.5, 62), "zomato": _r(4.3, 135)},
-    "CP 67 Mall": {"swiggy": _r(4.3, 21), "zomato": _r(4.2, 73)},
-    "Mantri Mall": {"swiggy": _r(4.6, "5.2K+"), "zomato": _r(4.2, "2,189")},
-    "Mohali Walk": {"swiggy": _r(4.5, 34), "zomato": _r(4.0, 77)},
-    "Mall of Jaipur": {"swiggy": _r(4.0, 108), "zomato": _r(4.1, 208)},
-    "Karnal Haveli": {"swiggy": _r(3.5, 5), "zomato": _r(3.3, 11)},
-    "Dhillon Plaza": {"swiggy": _r(4.2, 36), "zomato": _r(4.2, 98)},
-    "Kharar": {"swiggy": _r(4.3, 46), "zomato": _r(4.1, 69)},
-    "Panchkula": {"swiggy": _r(4.2, 36), "zomato": _r(4.3, 109)},
-    "Sector 24": {"swiggy": _r(4.0, 49), "zomato": _r(4.2, 174)},
+    "Baner": {"swiggy": _r(4.3, 36), "zomato": _r(4.3, 65)},
+    "Amanora": {"swiggy": _r(4.0, 22), "zomato": _r(4.3, 85)},
+    "Tribeca": {"swiggy": _r(4.6, 103), "zomato": _r(4.3, 205)},
+    "CP 67 Mall": {"swiggy": _r(4.4, 24), "zomato": _r(4.2, 108)},
+    "Mantri Mall": {"swiggy": _r(4.6, 5200), "zomato": _r(4.2, 2202)},
+    "Mohali Walk": {"swiggy": _r(4.4, 40), "zomato": _r(4.1, 106)},
+    "Mall of Jaipur": {"swiggy": _r(4.0, 117), "zomato": _r(4.1, 239)},
+    "Karnal Haveli": {"swiggy": _r(3.1, 6), "zomato": _r(3.4, 16)},
+    "Dhillon Plaza": {"swiggy": _r(4.0, 44), "zomato": _r(4.3, 148)},
+    "Kharar": {"swiggy": _r(4.2, 57), "zomato": _r(4.2, 93)},
+    "Panchkula": {"swiggy": _r(4.1, 52), "zomato": _r(4.3, 145)},
+    "Sector 24": {"swiggy": _r(4.3, 60), "zomato": _r(4.2, 209)},
 }
 
 # No Google storefront ratings data has been provided yet — every store
