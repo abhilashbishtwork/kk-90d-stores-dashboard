@@ -9,17 +9,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.6,
-          "count": "5.2K+"
+          "count": 5200
         },
         "zomato": {
           "rating": 4.2,
-          "count": "2,189"
+          "count": 2202
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -4149,18 +4149,18 @@
       "days_since_launch": 86,
       "ratings": {
         "swiggy": {
-          "rating": 4.4,
-          "count": 4
+          "rating": 4.3,
+          "count": 7
         },
         "zomato": {
           "rating": 4.1,
-          "count": 3
+          "count": 5
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -7941,18 +7941,18 @@
       "days_since_launch": 89,
       "ratings": {
         "swiggy": {
-          "rating": 4.4,
-          "count": 8
+          "rating": 4.3,
+          "count": 11
         },
         "zomato": {
           "rating": 4.1,
-          "count": 40
+          "count": 68
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -12265,18 +12265,18 @@
       "days_since_launch": 9,
       "ratings": {
         "swiggy": {
-          "rating": 4.5,
-          "count": 34
+          "rating": 4.4,
+          "count": 40
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 77
+          "rating": 4.1,
+          "count": 106
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -12503,7 +12503,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -12909,7 +12909,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -13358,17 +13358,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.0,
-          "count": 108
+          "count": 117
         },
         "zomato": {
           "rating": 4.1,
-          "count": 208
+          "count": 239
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -13577,7 +13577,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -13874,7 +13874,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -14130,7 +14130,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -14403,7 +14403,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -14709,7 +14709,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -14839,37 +14839,37 @@
               "zomato": 0.0,
               "ownly": 0.0
             },
-            "total": 4043.1,
+            "total": 4343.1,
             "online_orders": 0,
             "orders_by_channel": {
               "swiggy": 0,
               "zomato": 0,
               "ownly": 0
             },
-            "dine_in": 4043.1,
-            "dine_in_orders": 14
+            "dine_in": 4343.1,
+            "dine_in_orders": 15
           }
         ],
         "wtd": {
           "online": 0.0,
-          "total": 4043.1,
+          "total": 4343.1,
           "online_orders": 0,
-          "dine_in": 4043.1,
-          "dine_in_orders": 14
+          "dine_in": 4343.1,
+          "dine_in_orders": 15
         },
         "mtd": {
           "online": 0.0,
-          "total": 51986.12,
+          "total": 52286.12,
           "online_orders": 0,
-          "dine_in": 51986.12,
-          "dine_in_orders": 190
+          "dine_in": 52286.12,
+          "dine_in_orders": 191
         },
         "lifetime": {
           "online": 0.0,
-          "total": 51986.12,
+          "total": 52286.12,
           "online_orders": 0,
-          "dine_in": 51986.12,
-          "dine_in_orders": 190
+          "dine_in": 52286.12,
+          "dine_in_orders": 191
         }
       },
       "ops_computed": {
@@ -14901,7 +14901,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -15620,17 +15620,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.2,
-          "count": "<3"
+          "count": 5
         },
         "zomato": {
           "rating": null,
-          "count": null
+          "count": 0
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -17703,7 +17703,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -18915,7 +18915,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -19108,7 +19108,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -19582,7 +19582,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -20337,7 +20337,7 @@
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -21723,17 +21723,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": 3
+          "count": 10
         },
         "zomato": {
-          "rating": null,
-          "count": null
+          "rating": 4.3,
+          "count": 22
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -22556,11 +22556,11 @@
           {
             "date": "2026-09-20",
             "online": {
-              "swiggy": 3238.02,
+              "swiggy": 3238.0200000000004,
               "zomato": 3100.8599999999997,
               "ownly": 0.0
             },
-            "total": 15234.42,
+            "total": 15234.420000000002,
             "online_orders": 19,
             "orders_by_channel": {
               "swiggy": 10,
@@ -24638,17 +24638,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": "<3"
+          "count": 7
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 5
+          "rating": 4.3,
+          "count": 18
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -27333,17 +27333,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": 3
+          "count": 11
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 8
+          "rating": 4.3,
+          "count": 31
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -28201,10 +28201,10 @@
             "date": "2026-09-20",
             "online": {
               "swiggy": 2511.0299999999997,
-              "zomato": 2174.24,
+              "zomato": 2174.2400000000002,
               "ownly": 0.0
             },
-            "total": 4685.2699999999995,
+            "total": 4685.27,
             "online_orders": 13,
             "orders_by_channel": {
               "swiggy": 7,
@@ -30338,17 +30338,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": 4
+          "count": 9
         },
         "zomato": {
-          "rating": 3.3,
-          "count": 3
+          "rating": 4.3,
+          "count": 26
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -33378,17 +33378,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": "<3"
+          "count": 14
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 8
+          "rating": 4.3,
+          "count": 23
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -34297,10 +34297,10 @@
             "date": "2026-09-20",
             "online": {
               "swiggy": 2308.0299999999997,
-              "zomato": 4913.44,
+              "zomato": 4913.4400000000005,
               "ownly": 0.0
             },
-            "total": 7221.469999999999,
+            "total": 7221.47,
             "online_orders": 19,
             "orders_by_channel": {
               "swiggy": 10,
@@ -36490,17 +36490,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": "<3"
+          "count": 12
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 4
+          "rating": 4.3,
+          "count": 17
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -37136,11 +37136,11 @@
           {
             "date": "2026-09-20",
             "online": {
-              "swiggy": 2744.03,
+              "swiggy": 2744.0300000000007,
               "zomato": 2497.38,
               "ownly": 0.0
             },
-            "total": 5241.41,
+            "total": 5241.410000000001,
             "online_orders": 15,
             "orders_by_channel": {
               "swiggy": 8,
@@ -38885,17 +38885,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": 10
+          "count": 17
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 24
+          "rating": 4.3,
+          "count": 45
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -42706,17 +42706,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": 7
+          "count": 14
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 18
+          "rating": 4.3,
+          "count": 38
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -47057,17 +47057,17 @@
       "ratings": {
         "swiggy": {
           "rating": 4.3,
-          "count": 6
+          "count": 15
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 31
+          "rating": 4.3,
+          "count": 55
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -51571,18 +51571,18 @@
       "days_since_launch": 89,
       "ratings": {
         "swiggy": {
-          "rating": 4.1,
-          "count": 21
+          "rating": 4.3,
+          "count": 36
         },
         "zomato": {
-          "rating": 4.0,
-          "count": 30
+          "rating": 4.3,
+          "count": 65
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -55940,18 +55940,18 @@
       "days_since_launch": 89,
       "ratings": {
         "swiggy": {
-          "rating": 4.3,
-          "count": 14
+          "rating": 4.0,
+          "count": 22
         },
         "zomato": {
-          "rating": 4.2,
-          "count": 52
+          "rating": 4.3,
+          "count": 85
         },
         "google": {
           "rating": null,
           "count": null
         },
-        "as_of": "2026-08-24"
+        "as_of": "2026-09-29"
       },
       "revenue": {
         "daily": [
@@ -60385,6 +60385,6 @@
       }
     }
   ],
-  "generated_at_ist": "2026-09-29T05:05:12.256834+05:30",
+  "generated_at_ist": "2026-09-29T09:53:42.251890+05:30",
   "window_days": 90
 }
