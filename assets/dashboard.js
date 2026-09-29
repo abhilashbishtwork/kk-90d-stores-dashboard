@@ -580,7 +580,7 @@ function renderDateRangeRow(availableDates, range, onChange) {
 
 // ---------- generic sortable table ----------
 
-function renderSortableTable(tableId, columns, rows, sortState, groups) {
+function renderSortableTable(tableId, columns, rows, sortState, groups, pinnedRow) {
   const table = document.getElementById(tableId);
   const thead = table.querySelector('thead');
   const tbody = table.querySelector('tbody');
@@ -606,7 +606,7 @@ function renderSortableTable(tableId, columns, rows, sortState, groups) {
     el.addEventListener('click', () => {
       if (sortState.col === i) sortState.dir *= -1;
       else { sortState.col = i; sortState.dir = 1; }
-      renderSortableTable(tableId, columns, rows, sortState, groups);
+      renderSortableTable(tableId, columns, rows, sortState, groups, pinnedRow);
     });
     headRow.appendChild(el);
   });
@@ -625,6 +625,20 @@ function renderSortableTable(tableId, columns, rows, sortState, groups) {
       if (typeof av === 'string') return av.localeCompare(bv) * sortState.dir;
       return (av - bv) * sortState.dir;
     });
+  }
+
+  if (pinnedRow) {
+    const tr = document.createElement('tr');
+    tr.className = 'pinned-total-row';
+    for (const col of columns) {
+      const cell = document.createElement('td');
+      if (col.numeric) cell.classList.add('num');
+      if (col.storeCell) cell.classList.add('store-cell');
+      if (col.render) col.render(cell, pinnedRow);
+      else cell.textContent = col.display(pinnedRow);
+      tr.appendChild(cell);
+    }
+    tbody.appendChild(tr);
   }
 
   for (const row of sortedRows) {
@@ -672,6 +686,85 @@ function fmtThousands(n) {
   return (n / 1000).toFixed(1);
 }
 
+function calendarDays(start, end) {
+  return Math.round((new Date(end) - new Date(start)) / 86400000) + 1;
+}
+
+function shiftDateStr(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+// The immediately-preceding period of the same length as `range` —
+// e.g. range 22-28 Sep (7 days) -> 15-21 Sep. Used to drive the "vs
+// last week" comparison on the detail table's pinned Total row.
+function previousPeriodRange(range) {
+  const durationDays = calendarDays(range.start, range.end);
+  const prevEnd = shiftDateStr(range.start, -1);
+  const prevStart = shiftDateStr(prevEnd, -(durationDays - 1));
+  return { start: prevStart, end: prevEnd };
+}
+
+function aggregateRawSums(stores, start, end) {
+  const totals = {
+    onlineRevenue: 0, offlineRevenue: 0, onlineOrders: 0, offlineOrders: 0,
+    swiggyRevenue: 0, zomatoRevenue: 0, ownlyRevenue: 0,
+    swiggyOrders: 0, zomatoOrders: 0, ownlyOrders: 0,
+  };
+  for (const s of stores) {
+    const sums = sumDailyInRange(s.revenue.daily, start, end);
+    for (const k of Object.keys(totals)) totals[k] += sums[k];
+  }
+  return totals;
+}
+
+// Pinned summary row for the detail table: totals across every
+// currently-displayed store, plus a WoW comparison against the same
+// number of days immediately before the selected range.
+function buildTotalRow(stores, range) {
+  const prev = previousPeriodRange(range);
+  const curDays = calendarDays(range.start, range.end);
+  const prevDays = calendarDays(prev.start, prev.end);
+  const cur = aggregateRawSums(stores, range.start, range.end);
+  const pri = aggregateRawSums(stores, prev.start, prev.end);
+  const perDay = (v) => (curDays > 0 ? v / curDays : null);
+
+  const curOpdTotal = cur.onlineOrders + cur.offlineOrders;
+  const priOpdTotal = pri.onlineOrders + pri.offlineOrders;
+  const curRevTotal = cur.onlineRevenue + cur.offlineRevenue;
+  const priRevTotal = pri.onlineRevenue + pri.offlineRevenue;
+
+  return {
+    isTotal: true,
+    city: '',
+    store: 'Total',
+    launchDate: null,
+    daysSinceLaunch: null,
+    hasOffline: true,
+    opdTotal: perDay(curOpdTotal),
+    opdOffline: perDay(cur.offlineOrders),
+    opdOnline: perDay(cur.onlineOrders),
+    opdSwiggy: perDay(cur.swiggyOrders),
+    opdZomato: perDay(cur.zomatoOrders),
+    revTotal: perDay(curRevTotal),
+    revOffline: perDay(cur.offlineRevenue),
+    revOnline: perDay(cur.onlineRevenue),
+    revSwiggy: perDay(cur.swiggyRevenue),
+    revZomato: perDay(cur.zomatoRevenue),
+    opdTotalWow: wowLabel(curOpdTotal, priOpdTotal),
+    opdOfflineWow: wowLabel(cur.offlineOrders, pri.offlineOrders),
+    opdOnlineWow: wowLabel(cur.onlineOrders, pri.onlineOrders),
+    opdSwiggyWow: wowLabel(cur.swiggyOrders, pri.swiggyOrders),
+    opdZomatoWow: wowLabel(cur.zomatoOrders, pri.zomatoOrders),
+    revTotalWow: wowLabel(curRevTotal, priRevTotal),
+    revOfflineWow: wowLabel(cur.offlineRevenue, pri.offlineRevenue),
+    revOnlineWow: wowLabel(cur.onlineRevenue, pri.onlineRevenue),
+    revSwiggyWow: wowLabel(cur.swiggyRevenue, pri.swiggyRevenue),
+    revZomatoWow: wowLabel(cur.zomatoRevenue, pri.zomatoRevenue),
+  };
+}
+
 function buildDetailRow(s, range) {
   const sums = sumDailyInRange(s.revenue.daily, range.start, range.end);
   const perDay = (total) => (sums.days > 0 ? total / sums.days : null);
@@ -698,14 +791,24 @@ function buildDetailRow(s, range) {
   };
 }
 
-function opdCell(cell, value) {
-  if (value === null) { cell.textContent = '—'; return; }
-  cell.appendChild(scaledChip(value.toFixed(1), value, 'minOrdersPerDay'));
+function appendWowBadge(cell, wow) {
+  if (!wow) return;
+  const span = document.createElement('span');
+  span.className = 'wow-badge' + (wow.dir ? ' ' + wow.dir : '');
+  span.textContent = ' ' + (wow.text || wow);
+  cell.appendChild(span);
 }
 
-function revPerDayCell(cell, value) {
+function opdCell(cell, value, wow) {
+  if (value === null) { cell.textContent = '—'; return; }
+  cell.appendChild(scaledChip(value.toFixed(1), value, 'minOrdersPerDay'));
+  appendWowBadge(cell, wow);
+}
+
+function revPerDayCell(cell, value, wow) {
   if (value === null) { cell.textContent = '—'; return; }
   cell.appendChild(scaledChip(fmtThousands(value), value, 'minRevPerDay'));
+  appendWowBadge(cell, wow);
 }
 
 // Off-OPD/Off-Rev/day (and the Google storefront rating) only apply to
@@ -724,19 +827,19 @@ const DETAIL_COLUMNS = [
   { label: 'City', value: r => r.city, display: r => r.city },
   { label: 'Store', value: r => r.store, display: r => r.store, storeCell: true },
   { label: 'Live Since', value: r => r.launchDate, display: r => fmtDateLabel(r.launchDate) },
-  { label: 'Days Live', value: r => r.daysSinceLaunch, numeric: true, display: r => String(r.daysSinceLaunch) },
+  { label: 'Days Live', value: r => r.daysSinceLaunch, numeric: true, display: r => (r.daysSinceLaunch == null ? '' : String(r.daysSinceLaunch)) },
   // ---- OPD group ----
-  { label: 'Total', value: r => r.opdTotal, numeric: true, render: (cell, r) => opdCell(cell, r.opdTotal) },
-  { label: 'Offline', value: r => r.opdOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => opdCell(cell, r.opdOffline)) },
-  { label: 'Online', value: r => r.opdOnline, numeric: true, render: (cell, r) => opdCell(cell, r.opdOnline) },
-  { label: 'Swiggy', value: r => r.opdSwiggy, numeric: true, render: (cell, r) => opdCell(cell, r.opdSwiggy) },
-  { label: 'Zomato', value: r => r.opdZomato, numeric: true, render: (cell, r) => opdCell(cell, r.opdZomato) },
+  { label: 'Total', value: r => r.opdTotal, numeric: true, render: (cell, r) => opdCell(cell, r.opdTotal, r.opdTotalWow) },
+  { label: 'Offline', value: r => r.opdOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => opdCell(cell, r.opdOffline, r.opdOfflineWow)) },
+  { label: 'Online', value: r => r.opdOnline, numeric: true, render: (cell, r) => opdCell(cell, r.opdOnline, r.opdOnlineWow) },
+  { label: 'Swiggy', value: r => r.opdSwiggy, numeric: true, render: (cell, r) => opdCell(cell, r.opdSwiggy, r.opdSwiggyWow) },
+  { label: 'Zomato', value: r => r.opdZomato, numeric: true, render: (cell, r) => opdCell(cell, r.opdZomato, r.opdZomatoWow) },
   // ---- Revenue group ----
-  { label: 'Total', value: r => r.revTotal, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revTotal) },
-  { label: 'Offline', value: r => r.revOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => revPerDayCell(cell, r.revOffline)) },
-  { label: 'Online', value: r => r.revOnline, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revOnline) },
-  { label: 'Swiggy', value: r => r.revSwiggy, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revSwiggy) },
-  { label: 'Zomato', value: r => r.revZomato, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revZomato) },
+  { label: 'Total', value: r => r.revTotal, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revTotal, r.revTotalWow) },
+  { label: 'Offline', value: r => r.revOffline, numeric: true, render: (cell, r) => offlineOnlyCell(cell, r.hasOffline, () => revPerDayCell(cell, r.revOffline, r.revOfflineWow)) },
+  { label: 'Online', value: r => r.revOnline, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revOnline, r.revOnlineWow) },
+  { label: 'Swiggy', value: r => r.revSwiggy, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revSwiggy, r.revSwiggyWow) },
+  { label: 'Zomato', value: r => r.revZomato, numeric: true, render: (cell, r) => revPerDayCell(cell, r.revZomato, r.revZomatoWow) },
 ];
 
 const DETAIL_COLUMN_GROUPS = [
@@ -749,7 +852,8 @@ const detailSortState = { col: 3, dir: 1 };
 
 function renderDetailTable(stores, range) {
   const rows = stores.map(s => buildDetailRow(s, range));
-  renderSortableTable('detail-table', DETAIL_COLUMNS, rows, detailSortState, DETAIL_COLUMN_GROUPS);
+  const totalRow = buildTotalRow(stores, range);
+  renderSortableTable('detail-table', DETAIL_COLUMNS, rows, detailSortState, DETAIL_COLUMN_GROUPS, totalRow);
 }
 
 // ---------- Table 2: cancellation / KPT ----------
