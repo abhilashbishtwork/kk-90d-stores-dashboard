@@ -23,6 +23,25 @@ MANUAL_EXCLUDE_STORE_NAMES = {
     # which resolve_new_stores doesn't model — found 2026-08-24 while
     # investigating the missing-offline-revenue bug.
     "IXC KK CP 67 Mall",
+
+    # JM Road and Elpro Mall (Pune) each show up twice in the live
+    # dashboard (2026-09-29, user-reported): both "PNQ KK JM Road" and
+    # "PNQ KK JM Road Pos" independently have real swiggy/zomato orders
+    # of their own (not just POS), so both independently qualify as
+    # "known online stores" in the online-history pass and each gets
+    # its own roster row — this is a genuinely new pattern the rename
+    # guard doesn't model: two store_names for the same physical store
+    # active *concurrently* on the *same* channel types, not a clean
+    # predecessor-stops/successor-starts rename and not a simple
+    # online-name/POS-name split either. Excluding all 4 raw names here
+    # and replacing them with two MANUAL_ADDITIONAL_STORES entries below
+    # (one per physical store, aliasing both name variants) is simpler
+    # and safer than teaching resolve_new_stores a third merge pattern
+    # for what is, so far, a one-off data quirk.
+    "PNQ KK JM Road",
+    "PNQ KK JM Road Pos",
+    "PNQ KK Elpro Mall",
+    "PNQ KK Elpro Mall Pos",
 }
 
 # Cross-channel alias merges: `key` is a store_name that should NOT be
@@ -86,5 +105,29 @@ MANUAL_ADDITIONAL_STORES = [
         "store_name": "BLR KK Mantri Mall",
         "launch_date": "2026-08-13",
         "aliases": ["BLR KK Mantri Online", "BLR KK MANTRI MALL POS"],
+    },
+    {
+        # Both "PNQ KK JM Road" (true earliest activity: POS orders from
+        # 2026-08-27) and "PNQ KK JM Road Pos" (POS from 2026-09-07,
+        # plus its own swiggy/zomato from 2026-09-17) are the same
+        # physical store — see MANUAL_EXCLUDE_STORE_NAMES above for why
+        # this needed a fully manual entry rather than the usual alias
+        # override. launch_date is the true earliest order across every
+        # channel and both names (confirmed 2026-09-29 via a direct
+        # per-channel ClickHouse query), not either name's own
+        # online-history-only first_seen, since the launch_date floor in
+        # aggregate.py would otherwise silently drop the real Aug 27 -
+        # Sep 2 POS revenue that only exists under the bare name.
+        "store_name": "PNQ KK JM Road",
+        "launch_date": "2026-08-27",
+        "aliases": ["PNQ KK JM Road", "PNQ KK JM Road Pos"],
+    },
+    {
+        # Same pattern as JM Road above: "PNQ KK Elpro Mall" (POS since
+        # 2026-08-20) and "PNQ KK Elpro Mall Pos" (POS since 2026-09-07,
+        # own swiggy/zomato since 2026-09-07/2026-09-19) are one store.
+        "store_name": "PNQ KK Elpro Mall",
+        "launch_date": "2026-08-20",
+        "aliases": ["PNQ KK Elpro Mall", "PNQ KK Elpro Mall Pos"],
     },
 ]
